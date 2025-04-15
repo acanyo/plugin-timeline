@@ -1,7 +1,7 @@
 import { definePlugin } from "@halo-dev/console-shared";
-import HomeView from "./views/HomeView.vue";
-import { IconPlug } from "@halo-dev/components";
+import TimelineView from "./views/Timeline.vue";
 import { markRaw } from "vue";
+import MingcuteTimeLine from '~icons/mingcute/time-line?width=1.2em&height=1.2em';
 
 export default definePlugin({
   components: {},
@@ -9,16 +9,16 @@ export default definePlugin({
     {
       parentName: "Root",
       route: {
-        path: "/example",
-        name: "Example",
-        component: HomeView,
+        path: "/timeline",
+        name: "Timeline",
+        component: TimelineView,
         meta: {
-          title: "示例页面",
+          title: "时间线",
           searchable: true,
           menu: {
-            name: "示例页面",
-            group: "示例分组",
-            icon: markRaw(IconPlug),
+            name: "时间线",
+            group: "内容管理",
+            icon: markRaw(MingcuteTimeLine),
             priority: 0,
           },
         },
