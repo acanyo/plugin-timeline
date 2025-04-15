@@ -19,6 +19,8 @@ import TimelineListItem from "../components/TimelineListItem.vue";
 import MingcuteTimeLine from '~icons/mingcute/time-line?width=1.2em&height=1.2em';
 import type {Timeline, ListResult} from "../api/generated";
 import IconSearchLine from "~icons/ri/search-line";
+import IconAddCircle from "~icons/ri/add-circle-line";
+import TimelineEditingModal from "../components/TimelineEditingModal.vue";
 
 interface TimelineListResponse {
   items: Timeline[];
@@ -30,6 +32,7 @@ interface TimelineListResponse {
 const checkAll = ref(false);
 const selectedTimeline = ref<Timeline>();
 const selectedTimelineNames = ref<string[]>([]);
+const editingModal = ref(false);
 
 const page = useRouteQuery<number>("page", 1, {
   transform: Number,
@@ -169,6 +172,17 @@ const handleDeleteInBatch = async () => {
     <template #icon>
       <MingcuteTimeLine class="mr-2 self-center" />
     </template>
+    <template #actions>
+      <VButton
+        type="secondary"
+        @click="editingModal = true"
+      >
+        <template #icon>
+          <IconAddCircle class="h-full w-full" />
+        </template>
+        新建
+      </VButton>
+    </template>
   </VPageHeader>
   <div class="m-0 md:m-4">
     <VCard :body-class="['!p-0']">
@@ -304,5 +318,8 @@ const handleDeleteInBatch = async () => {
       </template>
     </VCard>
   </div>
-
+  <TimelineEditingModal
+    v-model:visible="editingModal"
+    @close="refetch"
+  />
 </template> 
