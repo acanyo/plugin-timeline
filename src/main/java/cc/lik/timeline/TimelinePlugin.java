@@ -1,8 +1,16 @@
 package cc.lik.timeline;
 
+import cc.lik.timeline.entity.Timeline;
 import org.springframework.stereotype.Component;
+import run.halo.app.extension.Scheme;
+import run.halo.app.extension.SchemeManager;
+import run.halo.app.extension.index.IndexSpec;
 import run.halo.app.plugin.BasePlugin;
 import run.halo.app.plugin.PluginContext;
+import java.util.Set;
+
+import static run.halo.app.extension.index.IndexAttributeFactory.multiValueAttribute;
+import static run.halo.app.extension.index.IndexAttributeFactory.simpleAttribute;
 
 /**
  * <p>Plugin main class to manage the lifecycle of the plugin.</p>
@@ -14,18 +22,26 @@ import run.halo.app.plugin.PluginContext;
  */
 @Component
 public class TimelinePlugin extends BasePlugin {
+    private final SchemeManager schemeManager;
 
-    public TimelinePlugin(PluginContext pluginContext) {
+    public TimelinePlugin(PluginContext pluginContext, SchemeManager schemeManager) {
         super(pluginContext);
+        this.schemeManager = schemeManager;
     }
 
     @Override
     public void start() {
-        System.out.println("插件启动成功！");
+        schemeManager.register(Timeline.class, indexSpecs -> {
+            indexSpecs.add(new IndexSpec()
+                .setName("spec.title")
+                .setIndexFunc(
+                    simpleAttribute(Timeline.class,
+                        timeline -> timeline.getSpec().getTitle())));
+        });
     }
 
     @Override
     public void stop() {
-        System.out.println("插件停止！");
+        schemeManager.unregister(Scheme.buildFromType(Timeline.class));
     }
 }
