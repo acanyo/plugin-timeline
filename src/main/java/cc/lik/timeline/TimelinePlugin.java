@@ -1,5 +1,7 @@
 package cc.lik.timeline;
 
+import static run.halo.app.extension.index.IndexAttributeFactory.simpleAttribute;
+
 import cc.lik.timeline.entity.Timeline;
 import org.springframework.stereotype.Component;
 import run.halo.app.extension.Scheme;
@@ -7,10 +9,6 @@ import run.halo.app.extension.SchemeManager;
 import run.halo.app.extension.index.IndexSpec;
 import run.halo.app.plugin.BasePlugin;
 import run.halo.app.plugin.PluginContext;
-import java.util.Set;
-
-import static run.halo.app.extension.index.IndexAttributeFactory.multiValueAttribute;
-import static run.halo.app.extension.index.IndexAttributeFactory.simpleAttribute;
 
 /**
  * <p>Plugin main class to manage the lifecycle of the plugin.</p>
@@ -37,6 +35,16 @@ public class TimelinePlugin extends BasePlugin {
                 .setIndexFunc(
                     simpleAttribute(Timeline.class,
                         timeline -> timeline.getSpec().getTitle())));
+            indexSpecs.add(new IndexSpec()
+                .setName("spec.type")
+                .setIndexFunc(
+                    simpleAttribute(Timeline.class,
+                        timeline -> timeline.getSpec().getType())));
+            indexSpecs.add(new IndexSpec()
+                .setName("spec.timestamp")
+                .setIndexFunc(
+                    simpleAttribute(Timeline.class,
+                        timeline -> timeline.getSpec().getTimestamp())));
         });
     }
 

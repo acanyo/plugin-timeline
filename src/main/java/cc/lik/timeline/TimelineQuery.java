@@ -1,7 +1,18 @@
 package cc.lik.timeline;
 
+import static java.util.Comparator.comparing;
+import static org.springdoc.core.fn.builders.parameter.Builder.parameterBuilder;
+import static run.halo.app.extension.index.query.QueryFactory.contains;
+import static run.halo.app.extension.index.query.QueryFactory.equal;
+import static run.halo.app.extension.index.query.QueryFactory.or;
+import static run.halo.app.extension.router.QueryParamBuildUtil.sortParameter;
+
 import cc.lik.timeline.entity.Timeline;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 import org.springdoc.core.fn.builders.operation.Builder;
 import org.springframework.data.domain.Sort;
@@ -13,17 +24,6 @@ import run.halo.app.extension.PageRequest;
 import run.halo.app.extension.PageRequestImpl;
 import run.halo.app.extension.router.IListRequest;
 import run.halo.app.extension.router.SortableRequest;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-
-import static java.util.Comparator.comparing;
-import static org.springdoc.core.fn.builders.parameter.Builder.parameterBuilder;
-import static run.halo.app.extension.index.query.QueryFactory.contains;
-import static run.halo.app.extension.index.query.QueryFactory.equal;
-import static run.halo.app.extension.index.query.QueryFactory.or;
-import static run.halo.app.extension.router.QueryParamBuildUtil.sortParameter;
 
 public class TimelineQuery extends SortableRequest {
 
@@ -36,15 +36,9 @@ public class TimelineQuery extends SortableRequest {
     public String getKeyword() {
         return StringUtils.defaultIfBlank(queryParams.getFirst("keyword"), null);
     }
-
-    @Nullable
-    public String getAuthor() {
-        return queryParams.getFirst("author");
-    }
-
     @Nullable
     public String getTimelineType() {
-        return queryParams.getFirst("timelineType");
+        return queryParams.getFirst("type");
     }
 
     public ListOptions toListOptions() {
@@ -53,7 +47,8 @@ public class TimelineQuery extends SortableRequest {
         Optional.ofNullable(getKeyword())
             .filter(StringUtils::isNotBlank)
             .ifPresent(keyword -> builder.andQuery(or(
-                contains("title", keyword),
+                contains("spec.title", keyword),
+                contains("spec.type", keyword),
                 contains("metadata.name", keyword)
             )));
 
@@ -86,7 +81,7 @@ public class TimelineQuery extends SortableRequest {
 
     public Sort getSort() {
         var sort = SortResolver.defaultInstance.resolve(exchange);
-        return sort.and(Sort.by("spec.createTime").descending());
+        return sort.and(Sort.by("spec.timestamp").descending());
     }
 
     public PageRequest toPageRequest() {

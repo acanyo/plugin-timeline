@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { VButton } from "@halo-dev/components";
-import { computed } from "vue";
-import { formatDatetime } from "@/utils/date";
-import { TimelineType } from "@/api";
-import type { Timeline } from "@/api";
+import {VButton} from "@halo-dev/components";
+import {computed} from "vue";
+import {formatDatetime} from "@/utils/date";
+import type {Timeline} from "@/api/generated";
+import {TimelineType} from "@/api/generated";
 
 const props = defineProps<{
   timeline: Timeline;

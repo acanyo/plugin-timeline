@@ -1,12 +1,13 @@
 <script lang="ts" setup>
-import { Toast, VButton, VModal, VSpace } from "@halo-dev/components";
-import { ref, computed, watch, onMounted } from "vue";
-import { cloneDeep } from 'lodash';
-import { timelineApiClient } from "@/api";
-import { TimelineType } from "@/api";
-import type { Timeline } from "@/api";
-import { toDatetimeLocal, toISOString } from "@/utils/date";
-import { FormKit } from "@formkit/vue";
+import {Toast, VButton, VModal, VSpace} from "@halo-dev/components";
+import {computed, onMounted, ref, watch} from "vue";
+import {cloneDeep} from 'lodash';
+import {timelineApi} from "@/api";
+import type {Option, Timeline} from "@/api/generated";
+import {TimelineType} from "@/api/generated";
+import {toDatetimeLocal, toISOString} from "@/utils/date";
+import {FormKit} from "@formkit/vue";
+
 
 const props = withDefaults(
   defineProps<{
@@ -48,7 +49,11 @@ const formState = ref<Timeline>(cloneDeep(initialFormState));
 const saving = ref<boolean>(false);
 const formVisible = ref(false);
 const eventTime = ref<string | undefined>(undefined);
-const timelineTypes = ref<{ label: string; value: TimelineType }[]>([]);
+const timelineTypes = ref<Option[]>([]);
+
+const validationMessages = {
+  required: (ctx: { name: string }) => `${ctx.name}不能为空`,
+} as const;
 
 const isUpdateMode = computed(() => {
   return !!formState.value.metadata.creationTimestamp;
@@ -105,18 +110,40 @@ watch(
   }
 );
 
+const isFormValid = computed(() => {
+  if (!formState.value.spec.title?.trim()) return false;
+  if (!formState.value.spec.description?.trim()) return false;
+  return !!eventTime.value;
+});
+
 const handleSaveTimeline = async () => {
   try {
+    if (!isFormValid.value) {
+      if (!formState.value.spec.title?.trim()) {
+        Toast.error("事件标题不能为空");
+        return;
+      }
+      if (!formState.value.spec.description?.trim()) {
+        Toast.error("事件描述不能为空");
+        return;
+      }
+      if (!eventTime.value) {
+        Toast.error("请选择事件时间");
+        return;
+      }
+
+      Toast.error("请检查表单填写是否正确");
+      return;
+    }
+
     saving.value = true;
     if (isUpdateMode.value) {
-      await timelineApiClient.timeline.updateTimeline({
-        name: formState.value.metadata.name,
-        timeline: formState.value
-      });
+      await timelineApi.updateTimeline(
+        formState.value.metadata.name,
+        formState.value
+      );
     } else {
-      await timelineApiClient.timeline.createTimeline({
-        timeline: formState.value
-      });
+      await timelineApi.createTimeline(formState.value);
     }
 
     Toast.success("保存成功");
@@ -128,10 +155,9 @@ const handleSaveTimeline = async () => {
     saving.value = false;
   }
 };
-
 onMounted(async () => {
-  const response = await timelineApiClient.timeline.listTimelineTypes();
-  timelineTypes.value = response.data;
+  const types = await timelineApi.listTimelineTypes();
+  timelineTypes.value = types;
 });
 </script>
 
@@ -162,19 +188,21 @@ onMounted(async () => {
         </div>
         <div class="mt-5 divide-y divide-gray-100 md:col-span-3 md:mt-0">
           <FormKit
-            type="text"
             v-model="formState.spec.title"
-            name="title"
+            type="text"
+            name="事件标题"
             validation="required"
+            :validation-messages="validationMessages"
             label="事件标题"
           ></FormKit>
           <FormKit
-            type="textarea"
             v-model="formState.spec.description"
-            name="description"
+            type="textarea"
+            name="事件描述"
+            validation="required"
+            :validation-messages="validationMessages"
             label="事件描述"
-            :rows="4"
-            validation="length:0,500"
+            :rows="3"
           ></FormKit>
           <FormKit
             type="datetime-local"
@@ -183,6 +211,7 @@ onMounted(async () => {
             v-model="eventTime"
             name="timestamp"
             validation="required"
+            :validation-messages="validationMessages"
             label="事件时间"
           ></FormKit>
           <FormKit
@@ -242,14 +271,17 @@ onMounted(async () => {
 
     <template #footer>
       <VSpace>
+        <VButton type="secondary" @click="onVisibleChange(false)">
+          取消
+        </VButton>
         <VButton
           :loading="saving"
-          type="secondary"
+          type="primary"
+          :disabled="!isFormValid"
           @click="handleSaveTimeline"
         >
-          提交
+          确定
         </VButton>
-        <VButton @click="onVisibleChange(false)">取消</VButton>
       </VSpace>
     </template>
   </VModal>

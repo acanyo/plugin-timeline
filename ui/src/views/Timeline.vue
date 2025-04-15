@@ -1,26 +1,27 @@
 <script lang="ts" setup>
 import {
-  VCard,
-  IconRefreshLine,
   Dialog,
+  IconAddCircle,
+  IconCloseCircle,
+  IconRefreshLine,
+  Toast,
   VButton,
+  VCard,
+  VDropdownItem,
   VEmpty,
   VLoading,
-  VPagination,
   VPageHeader,
-  VDropdownItem,
-  Toast,
-  VSpace,
-  IconAddCircle,
-  IconCloseCircle
+  VPagination,
+  VSpace
 } from "@halo-dev/components";
-import { useQuery } from "@tanstack/vue-query";
-import { computed, ref, watch } from "vue";
-import { formatDatetime } from "@/utils/date";
-import { useRouteQuery } from "@vueuse/router";
+import {useQuery} from "@tanstack/vue-query";
+import {computed, ref, watch} from "vue";
+import {formatDatetime} from "@/utils/date";
+import {useRouteQuery} from "@vueuse/router";
 import TimelineEditingModal from "../components/TimelineEditingModal.vue";
-import { timelineApiClient } from "@/api";
-import type { Timeline } from "@/api/generated";
+import {timelineApi} from "@/api";
+import type {Timeline} from "@/api/generated";
+import IconParkTimeline from '~icons/icon-park/timeline';
 
 defineOptions({
   name: "TimelineView",
@@ -63,15 +64,25 @@ const {
 } = useQuery({
   queryKey: ["timelines", page, size, selectedSort, selectedType, keyword],
   queryFn: async () => {
-    const { data } = await timelineApiClient.timeline.listTimelines({
-      page: page.value,
-      size: size.value,
-      sort: [selectedSort.value].filter(Boolean) as string[],
-      status: selectedType.value,
-      keyword: keyword?.value,
-    });
-    total.value = data.total;
-    return data.items;
+    try {
+      const response = await fetch(
+        `/apis/api.timeline.lik.cc/v1alpha1/timelines?page=${page.value - 1}&size=${size.value}${
+          selectedType.value ? `&type=${selectedType.value}` : ""
+        }${keyword.value ? `&keyword=${encodeURIComponent(keyword.value)}` : ""}`
+      );
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data: { items: Timeline[]; total: number } = await response.json();
+      total.value = data.total;
+      return data.items;
+    } catch (error) {
+      console.error("Failed to fetch timelines:", error);
+      Toast.error("获取时间线列表失败");
+      return [];
+    }
   },
 });
 
@@ -93,8 +104,8 @@ const handleDeleteInBatch = () => {
     confirmType: "danger",
     onConfirm: async () => {
       try {
-        const promises = selectedTimelines.value.map((name) => {
-          return timelineApiClient.timeline.deleteTimeline({ name });
+        const promises = selectedTimelines.value.map((timeline) => {
+          return timelineApi.deleteTimeline(timeline);
         });
         if (promises) {
           await Promise.all(promises);
@@ -139,6 +150,9 @@ const onEditingModalClose = async () => {
   />
 
   <VPageHeader title="时间线">
+    <template #icon>
+      <IconParkTimeline />
+    </template>
     <template #actions>
       <VSpace v-permission="['plugin:timeline:manage']">
         <VButton

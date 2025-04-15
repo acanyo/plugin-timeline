@@ -1,70 +1,127 @@
-import {ucApiClient} from "@halo-dev/api-client";
-import type {TimelineV1alpha1UcApi, Timeline} from "./generated";
+import type {AxiosInstance} from "axios";
+import axios from "axios";
+import type {Timeline} from "./generated";
 import {TimelineType} from "./generated";
+import {consoleApiClient} from "@halo-dev/api-client";
 
-// 创建一个带有 timeline 属性的对象
-export const timelineApiClient = {
-  ...ucApiClient,
-  timeline: {
-    listTimelines: async (params: {
-      page?: number;
-      size?: number;
-      keyword?: string;
-      sort?: string[];
-      status?: string;
-      type?: TimelineType;
-      pinned?: boolean;
-    }) => {
-      const response = await fetch(`/apis/timeline.lik.cc/v1alpha1/timeline?${new URLSearchParams({
-        page: params.page?.toString() || '1',
-        size: params.size?.toString() || '20',
-        keyword: params.keyword || '',
-        sort: params.sort?.join(',') || '',
-        status: params.status || '',
-        type: params.type || '',
-        pinned: params.pinned?.toString() || ''
-      })}`);
-      return { data: await response.json() };
-    },
-    createTimeline: async (params: { timeline: Timeline }) => {
-      const response = await fetch('/apis/timeline.lik.cc/v1alpha1/timeline', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+export interface Option {
+  label: string;
+  value: string;
+}
+
+export interface TimelineList {
+  page: number;
+  size: number;
+  total: number;
+  items: Timeline[];
+}
+
+export class TimelineApi {
+  private axios: AxiosInstance;
+  private baseUrl: string = "/apis/timeline.lik.cc/v1alpha1";
+
+  constructor(axios: AxiosInstance) {
+    this.axios = axios;
+  }
+
+  /**
+   * 获取时间线列表
+   */
+  async listTimelines(params?: {
+    page?: number;
+    size?: number;
+    keyword?: string;
+    sort?: string[];
+    status?: string;
+    type?: TimelineType;
+    pinned?: boolean;
+  }): Promise<TimelineList> {
+    const { data } = await this.axios.get(
+      `${this.baseUrl}/timeline`,
+      {
+        params: {
+          page: params?.page || 1,
+          size: params?.size || 20,
+          keyword: params?.keyword,
+          sort: params?.sort,
+          status: params?.status,
+          type: params?.type,
+          pinned: params?.pinned,
         },
-        body: JSON.stringify(params.timeline)
+      }
+    );
+    return data;
+  }
+
+  /**
+   * 获取单个时间线
+   */
+  async getTimeline(name: string): Promise<Timeline> {
+    const { data } = await this.axios.get(
+      `${this.baseUrl}/timeline/${name}`
+    );
+    return data;
+  }
+
+  /**
+   * 创建时间线
+   */
+  async createTimeline(timeline: Timeline): Promise<Timeline> {
+    const { data } = await this.axios.post(
+      `${this.baseUrl}/timeline`,
+      timeline
+    );
+    return data;
+  }
+
+  /**
+   * 更新时间线
+   */
+  async updateTimeline(name: string, timeline: Timeline): Promise<Timeline> {
+    const { data } = await this.axios.put(
+      `${this.baseUrl}/timeline/${name}`,
+      timeline
+    );
+    return data;
+  }
+
+  /**
+   * 删除时间线
+   */
+  async deleteTimeline(name: string): Promise<void> {
+    await this.axios.delete(`${this.baseUrl}/timeline/${name}`);
+  }
+
+  /**
+   * 批量删除时间线
+   */
+  async deleteTimelines(names: string[]): Promise<void> {
+    const promises = names.map((name) => this.deleteTimeline(name));
+    await Promise.all(promises);
+  }
+
+  /**
+   * 获取时间线类型列表
+   */
+  async listTimelineTypes(): Promise<Option[]> {
+    try {
+      const { data } = await consoleApiClient.plugin.plugin.fetchPluginConfig({
+        name: 'timeline'
       });
-      return { data: await response.json() };
-    },
-    updateTimeline: async (params: { name: string; timeline: Timeline }) => {
-      const response = await fetch(`/apis/timeline.lik.cc/v1alpha1/timeline/${params.name}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(params.timeline)
-      });
-      return { data: await response.json() };
-    },
-    deleteTimeline: async (params: { name: string }) => {
-      await fetch(`/apis/timeline.lik.cc/v1alpha1/timeline/${params.name}`, {
-        method: 'DELETE'
-      });
-    },
-    getTimeline: async (params: { name: string }) => {
-      const response = await fetch(`/apis/timeline.lik.cc/v1alpha1/timeline/${params.name}`);
-      return { data: await response.json() };
-    },
-    listTimelineTypes: async () => {
-      return {
-        data: [
-          { label: "重要事件", value: TimelineType.IMPORTANT },
-          { label: "普通事件", value: TimelineType.NORMAL },
-          { label: "里程碑", value: TimelineType.MILESTONE }
-        ]
-      };
+
+      const { advanced } = data?.data ?? {};
+      const { timelineTypes = [] } = advanced ? JSON.parse(advanced) : {};
+
+      return timelineTypes.map((type: string) => ({
+        label: type,
+        value: type
+      }));
+    } catch (error) {
+      console.error("Failed to fetch timeline config:", error);
+      return [];
     }
-  } as TimelineV1alpha1UcApi
-};
+  }
+}
 
-export * from "./generated"; 
+// 创建实例并导出
+export const timelineApi = new TimelineApi(axios.create()); 

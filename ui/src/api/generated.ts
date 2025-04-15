@@ -61,6 +61,13 @@ export interface TimelineV1alpha1UcApi {
   listTimelineTypes(): Promise<{ data: { label: string; value: TimelineType }[] }>;
 }
 
+/**
+ * 选项
+ **/
+export interface Option {
+  label: string;
+  value: string;
+}
 // 扩展 ucApiClient 类型
 declare module "@halo-dev/api-client" {
   interface UcApiClient {

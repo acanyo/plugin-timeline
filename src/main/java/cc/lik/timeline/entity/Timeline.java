@@ -1,6 +1,10 @@
 package cc.lik.timeline.entity;
 
+import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.NOT_REQUIRED;
+import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
+
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -8,12 +12,6 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import run.halo.app.extension.AbstractExtension;
 import run.halo.app.extension.GVK;
-
-import java.util.List;
-import java.util.Set;
-
-import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.NOT_REQUIRED;
-import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 
 @Data
 @AllArgsConstructor

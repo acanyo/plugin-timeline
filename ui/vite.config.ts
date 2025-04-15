@@ -1,9 +1,9 @@
-import { fileURLToPath, URL } from "url";
+import {fileURLToPath, URL} from "url";
 
-import { HaloUIPluginBundlerKit } from "@halo-dev/ui-plugin-bundler-kit";
+import {HaloUIPluginBundlerKit} from "@halo-dev/ui-plugin-bundler-kit";
 import Vue from "@vitejs/plugin-vue";
 import Icons from "unplugin-icons/vite";
-import { defineConfig } from "vite";
+import {defineConfig} from "vite";
 
 export default defineConfig({
   plugins: [
