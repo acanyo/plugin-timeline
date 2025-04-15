@@ -76,6 +76,13 @@ const {
       }
       
       const data: { items: Timeline[]; total: number } = await response.json();
+      data.items = data.items.map(item => ({
+        ...item,
+        spec: {
+          ...item.spec,
+          timestamp: formatDatetime(item.spec.timestamp)
+        }
+      }));
       total.value = data.total;
       return data.items;
     } catch (error) {
@@ -353,7 +360,7 @@ const onEditingModalClose = async () => {
                   {{ timeline.spec.type === 'important' ? '重要' : timeline.spec.type === 'normal' ? '普通' : '里程碑' }}
                 </td>
                 <td class="px-4 py-4 table-td">
-                  {{ formatDatetime(timeline.spec.timestamp) }}
+                  {{ timeline.spec.timestamp }}
                 </td>
                 <td class="px-4 py-4">{{ timeline.spec.description || '-' }}</td>
                 <td class="px-4 py-4 table-td">

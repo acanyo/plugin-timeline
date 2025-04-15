@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${settings.title}">时间线</title>
+</head>
+<body>
+    <div class="handsome-container">
+        <!-- 首页汇总视图 -->
+        <div th:if="${#lists.isEmpty(type)}" class="handsome-summary-view">
+            <div class="handsome-timeline-header">
+                <h1 class="handsome-title" th:text="${settings.title}">时间线</h1>
+            </div>
+
+            <div class="handsome-timeline-types">
+                <div class="handsome-type-grid">
+                    <!-- 全部类型卡片 -->
+                    <div class="handsome-type-card">
+                        <a href="/timelines/all" class="handsome-card-link">
+                            <div class="handsome-card-content">
+                                <h3 class="handsome-card-title">全部</h3>
+                                <p class="handsome-card-count">
+                                    <span th:text="${#lists.size(timelines)}">0</span> 条记录
+                                </p>
+                                <div class="handsome-card-preview">
+                                    <div th:each="timeline,iterStat : ${timelines}" 
+                                         th:if="${iterStat.index < 3}" 
+                                         class="handsome-preview-item">
+                                        <span class="handsome-preview-date" th:text="${#dates.format(timeline.spec.timestamp, 'MM-dd')}">01-01</span>
+                                        <span class="handsome-preview-title" th:text="${timeline.spec.title}">标题</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+                    <!-- 各类型卡片 -->
+                    <div th:each="type : ${timelineTypes}" class="handsome-type-card">
+                        <a th:href="@{/timelines/{type}(type=${type.value})}" class="handsome-card-link">
+                            <div class="handsome-card-content">
+                                <h3 class="handsome-card-title" th:text="${type.label}">类型</h3>
+                                <p class="handsome-card-count">
+                                    <span th:text="${#lists.size(timelines.?[spec.type == type.value])}">0</span> 条记录
+                                </p>
+                                <div class="handsome-card-preview">
+                                    <div th:each="timeline,iterStat : ${timelines.?[spec.type == type.value]}" 
+                                         th:if="${iterStat.index < 3}"
+                                         class="handsome-preview-item">
+                                        <span class="handsome-preview-date" th:text="${#dates.format(timeline.spec.timestamp, 'MM-dd')}">01-01</span>
+                                        <span class="handsome-preview-title" th:text="${timeline.spec.title}">标题</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 详情页视图 -->
+        <div th:if="${not #lists.isEmpty(type)}" class="handsome-detail-view">
+            <div class="handsome-timeline-header">
+                <a href="/timelines" class="handsome-back-btn">返回</a>
+                <h1 class="handsome-title">
+                    <span th:text="${type == 'all' ? '全部' : (#lists.isEmpty(timelineTypes) ? type : timelineTypes.?[value == type][0].label)}">类型</span>
+                    <small class="handsome-subtitle">时间线</small>
+                </h1>
+            </div>
+
+            <!-- 时间线列表 -->
+            <div class="handsome-timeline-list">
+                <div th:if="${#lists.isEmpty(timelines)}" class="handsome-empty">
+                    <p>暂无时间线记录</p>
+                </div>
+
+                <div th:unless="${#lists.isEmpty(timelines)}" class="handsome-timeline-items">
+                    <div th:each="timeline : ${timelines}" class="handsome-timeline-item">
+                        <div class="handsome-timeline-date">
+                            <span class="handsome-date-day" th:text="${#temporals.format(#temporals.parse(timeline.spec.timestamp), 'dd')}">01</span>
+                            <span class="handsome-date-month" th:text="${#temporals.format(#temporals.parse(timeline.spec.timestamp), 'MM月')}">01月</span>
+                            <span class="handsome-date-year" th:text="${#temporals.format(#temporals.parse(timeline.spec.timestamp), 'yyyy')}">2024</span>
+                        </div>
+                        <div class="handsome-timeline-content">
+                            <h3 class="handsome-item-title" th:text="${timeline.spec.title}">标题</h3>
+                            <p th:if="${timeline.spec.description}" class="handsome-item-desc" th:text="${timeline.spec.description}">描述</p>
+                            
+                            <div th:if="${timeline.spec.illustrated}" class="handsome-item-image">
+                                <img th:src="${timeline.spec.illustrated}" th:alt="${timeline.spec.title}">
+                            </div>
+                            
+                            <div th:if="${timeline.spec.tags}" class="handsome-item-tags">
+                                <span th:each="tag : ${timeline.spec.tags}" class="handsome-tag" th:text="${tag}">标签</span>
+                            </div>
+                            
+                            <div th:if="${timeline.spec.relatedArticle}" class="handsome-item-article">
+                                <a th:href="${timeline.spec.relatedArticle}" target="_blank" class="handsome-link">
+                                    查看相关文章
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
