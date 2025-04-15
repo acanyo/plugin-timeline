@@ -27,7 +27,7 @@
                                     <div th:each="timeline,iterStat : ${timelines}" 
                                          th:if="${iterStat.index < 3}" 
                                          class="handsome-preview-item">
-                                        <span class="handsome-preview-date" th:text="${#dates.format(timeline.spec.timestamp, 'MM-dd')}">01-01</span>
+                                        <span class="handsome-preview-date" th:text="${#strings.substring(timeline.spec.timestamp, 5, 10)}">01-01</span>
                                         <span class="handsome-preview-title" th:text="${timeline.spec.title}">标题</span>
                                     </div>
                                 </div>
@@ -47,7 +47,7 @@
                                     <div th:each="timeline,iterStat : ${timelines.?[spec.type == type.value]}" 
                                          th:if="${iterStat.index < 3}"
                                          class="handsome-preview-item">
-                                        <span class="handsome-preview-date" th:text="${#dates.format(timeline.spec.timestamp, 'MM-dd')}">01-01</span>
+                                        <span class="handsome-preview-date" th:text="${#dates.format(#dates.parse(timeline.spec.timestamp), 'MM-dd')}">01-01</span>
                                         <span class="handsome-preview-title" th:text="${timeline.spec.title}">标题</span>
                                     </div>
                                 </div>
@@ -77,9 +77,9 @@
                 <div th:unless="${#lists.isEmpty(timelines)}" class="handsome-timeline-items">
                     <div th:each="timeline : ${timelines}" class="handsome-timeline-item">
                         <div class="handsome-timeline-date">
-                            <span class="handsome-date-day" th:text="${#temporals.format(#temporals.parse(timeline.spec.timestamp), 'dd')}">01</span>
-                            <span class="handsome-date-month" th:text="${#temporals.format(#temporals.parse(timeline.spec.timestamp), 'MM月')}">01月</span>
-                            <span class="handsome-date-year" th:text="${#temporals.format(#temporals.parse(timeline.spec.timestamp), 'yyyy')}">2024</span>
+                            <span class="handsome-date-day" th:text="${#dates.format(#dates.parse(timeline.spec.timestamp), 'dd')}">01</span>
+                            <span class="handsome-date-month" th:text="${#dates.format(#dates.parse(timeline.spec.timestamp), 'MM月')}">01月</span>
+                            <span class="handsome-date-year" th:text="${#dates.format(#dates.parse(timeline.spec.timestamp), 'yyyy')}">2024</span>
                         </div>
                         <div class="handsome-timeline-content">
                             <h3 class="handsome-item-title" th:text="${timeline.spec.title}">标题</h3>
