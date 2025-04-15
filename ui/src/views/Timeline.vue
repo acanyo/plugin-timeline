@@ -1,211 +1,195 @@
-<script setup lang="ts">
-import {useRouteQuery} from "@vueuse/router";
-import {computed, ref, watch, onUnmounted} from "vue";
-import type {Ref} from "vue";
-import {useQuery} from "@tanstack/vue-query";
-import type {QueryKey} from "@tanstack/vue-query";
+<script lang="ts" setup>
 import {
-  VPageHeader,
   VCard,
-  VLoading,
-  VEmpty,
-  VSpace,
+  IconRefreshLine,
+  Dialog,
   VButton,
+  VEmpty,
+  VLoading,
   VPagination,
-  IconRefreshLine, Dialog, Toast
+  VPageHeader,
+  VDropdownItem,
+  Toast,
+  VSpace,
+  IconAddCircle,
+  IconCloseCircle
 } from "@halo-dev/components";
-import {timelineApiClient} from "../api";
-import TimelineListItem from "../components/TimelineListItem.vue";
-import MingcuteTimeLine from '~icons/mingcute/time-line?width=1.2em&height=1.2em';
-import type {Timeline, ListResult} from "../api/generated";
-import IconSearchLine from "~icons/ri/search-line";
-import IconAddCircle from "~icons/ri/add-circle-line";
+import { useQuery } from "@tanstack/vue-query";
+import { computed, ref, watch } from "vue";
+import { formatDatetime } from "@/utils/date";
+import { useRouteQuery } from "@vueuse/router";
 import TimelineEditingModal from "../components/TimelineEditingModal.vue";
+import { timelineApiClient } from "@/api";
+import type { Timeline } from "@/api/generated";
 
-interface TimelineListResponse {
-  items: Timeline[];
-  total: number;
-  page: number;
-  size: number;
-}
+defineOptions({
+  name: "TimelineView",
+});
 
-const checkAll = ref(false);
-const selectedTimeline = ref<Timeline>();
-const selectedTimelineNames = ref<string[]>([]);
+const selectedTimeline = ref<Timeline | undefined>();
+const selectedTimelines = ref<string[]>([]);
+const checkedAll = ref(false);
+const selectedSort = useRouteQuery<string | undefined>("sort");
+const selectedType = useRouteQuery<string | undefined>("type");
+
+const page = ref(1);
+const size = ref(20);
+const keyword = ref("");
+const searchText = ref("");
+const total = ref(0);
 const editingModal = ref(false);
 
-const page = useRouteQuery<number>("page", 1, {
-  transform: Number,
-});
-const size = useRouteQuery<number>("size", 20, {
-  transform: Number,
-});
-const selectedSort = useRouteQuery<string | undefined>("sort");
-const selectedStatus = useRouteQuery<string | undefined>("status");
-const keyword = useRouteQuery<string>("keyword", "");
-const total = ref(0);
-
 watch(
-  () => [
-    selectedStatus.value,
-    selectedSort.value,
-    keyword.value,
-  ],
+  () => [selectedSort.value, selectedType.value, keyword.value],
   () => {
     page.value = 1;
-  },
+  }
 );
 
-const handleClearFilters = () => {
-  selectedStatus.value = undefined;
+function handleClearFilters() {
   selectedSort.value = undefined;
-};
+  selectedType.value = undefined;
+}
 
 const hasFilters = computed(() => {
-  return (
-    selectedStatus.value ||
-    selectedSort.value
-  );
+  return selectedSort.value || selectedType.value;
 });
-
-// 创建一个类型断言函数
-function assertTimelineList(data: any): data is ListResult<Timeline> {
-  return data && Array.isArray(data.items) && typeof data.total === 'number';
-}
 
 const {
   data: timelines,
   isLoading,
   isFetching,
   refetch,
-} = useQuery(
-  ["timelines", page, size, keyword, selectedSort, selectedStatus],
-  async () => {
+} = useQuery({
+  queryKey: ["timelines", page, size, selectedSort, selectedType, keyword],
+  queryFn: async () => {
     const { data } = await timelineApiClient.timeline.listTimelines({
       page: page.value,
       size: size.value,
-      keyword: keyword.value,
       sort: [selectedSort.value].filter(Boolean) as string[],
-      status: selectedStatus.value,
+      status: selectedType.value,
+      keyword: keyword?.value,
     });
-
-    if (data && typeof data.total === 'number') {
-      total.value = data.total;
-    }
-    return data;
-  }
-);
-
-// 监听 timelines 数据变化
-watch(timelines, (newData) => {
-  if (newData && typeof newData.total === 'number') {
-    total.value = newData.total;
-  }
+    total.value = data.total;
+    return data.items;
+  },
 });
 
-// 创建一个计算属性来安全地访问 items
-const timelineItems = computed(() => {
-  if (timelines.value && assertTimelineList(timelines.value)) {
-    return timelines.value.items;
-  }
-  return [];
-});
-
-// Selection
 const handleCheckAllChange = (e: Event) => {
   const { checked } = e.target as HTMLInputElement;
-
-  if (checked) {
-    selectedTimelineNames.value =
-      timelineItems.value.map((timeline: Timeline) => {
-        return timeline.metadata.name;
-      }) || [];
+  checkedAll.value = checked;
+  if (checkedAll.value) {
+    selectedTimelines.value =
+      timelines.value?.map((timeline) => timeline.metadata.name) || [];
   } else {
-    selectedTimelineNames.value = [];
+    selectedTimelines.value.length = 0;
   }
 };
 
-const checkSelection = (timeline: Timeline) => {
-  return (
-    timeline.metadata.name === selectedTimeline.value?.metadata.name || selectedTimelineNames.value.includes(timeline.metadata.name)
-  );
-};
-
-watch(
-  () => selectedTimelineNames.value,
-  (newValue) => {
-    checkAll.value = newValue.length === timelineItems.value.length;
-  }
-);
-
-const handleDeleteInBatch = async () => {
+const handleDeleteInBatch = () => {
   Dialog.warning({
-    title: '删除所选时间轴',
-    description: '将同时删除所有选中的时间轴，该操作不可恢复。',
+    title: "是否确认删除所选的时间线？",
+    description: "删除之后将无法恢复。",
     confirmType: "danger",
-    confirmText: '确定',
-    cancelText: '取消',
     onConfirm: async () => {
       try {
-        const promises = selectedTimelineNames.value.map((name) => {
-          return timelineApiClient.timeline.deleteTimeline(
-            {
-              name: name
-            }
-          );
+        const promises = selectedTimelines.value.map((name) => {
+          return timelineApiClient.timeline.deleteTimeline({ name });
         });
-        await Promise.all(promises);
-        selectedTimelineNames.value = [];
-
-        Toast.success('删除成功');
+        if (promises) {
+          await Promise.all(promises);
+        }
+        selectedTimelines.value.length = 0;
+        checkedAll.value = false;
+        Toast.success("删除成功");
       } catch (e) {
-        console.error("Failed to delete timeline", e);
+        console.error(e);
       } finally {
-        refetch();
+        await refetch();
       }
     },
   });
 };
+
+function handleReset() {
+  keyword.value = "";
+  searchText.value = "";
+}
+
+function onKeywordChange() {
+  keyword.value = searchText.value;
+}
+
+const handleOpenCreateModal = (timeline?: Timeline) => {
+  selectedTimeline.value = timeline;
+  editingModal.value = true;
+};
+
+const onEditingModalClose = async () => {
+  selectedTimeline.value = undefined;
+  refetch();
+};
 </script>
+
 <template>
-  <VPageHeader title="时间轴">
-    <template #icon>
-      <MingcuteTimeLine class="mr-2 self-center" />
-    </template>
+  <TimelineEditingModal
+    v-model:visible="editingModal"
+    :timeline="selectedTimeline"
+    @close="onEditingModalClose"
+  />
+
+  <VPageHeader title="时间线">
     <template #actions>
-      <VButton
-        type="secondary"
-        @click="editingModal = true"
-      >
-        <template #icon>
-          <IconAddCircle class="h-full w-full" />
-        </template>
-        新建
-      </VButton>
+      <VSpace v-permission="['plugin:timeline:manage']">
+        <VButton
+          type="secondary"
+          @click="editingModal = true"
+        >
+          <template #icon>
+            <IconAddCircle class="h-full w-full" />
+          </template>
+          新建
+        </VButton>
+      </VSpace>
     </template>
   </VPageHeader>
+
   <div class="m-0 md:m-4">
     <VCard :body-class="['!p-0']">
       <template #header>
         <div class="block w-full bg-gray-50 px-4 py-3">
-          <div
-            class="relative flex flex-col flex-wrap items-start gap-4 sm:flex-row sm:items-center"
-          >
+          <div class="relative flex flex-col flex-wrap items-start gap-4 sm:flex-row sm:items-center">
             <div
               v-permission="['plugin:timeline:manage']"
               class="hidden items-center sm:flex"
             >
               <input
-                v-model="checkAll"
+                v-model="checkedAll"
                 type="checkbox"
                 @change="handleCheckAllChange"
               />
             </div>
             <div class="flex w-full flex-1 items-center sm:w-auto">
-              <SearchInput
-                v-if="!selectedTimelineNames.length"
-                v-model="keyword" />
-              <VSpace v-else>
+              <FormKit
+                v-if="!selectedTimelines.length"
+                v-model="searchText"
+                placeholder="输入关键词搜索"
+                type="text"
+                outer-class="!moments-p-0 moments-mr-2"
+                @keyup.enter="onKeywordChange"
+              >
+                <template v-if="keyword" #suffix>
+                  <div
+                    class="group flex h-full cursor-pointer items-center bg-white px-2 transition-all hover:bg-gray-50"
+                    @click="handleReset"
+                  >
+                    <IconCloseCircle
+                      class="h-4 w-4 text-gray-500 group-hover:text-gray-700"
+                    />
+                  </div>
+                </template>
+              </FormKit>
+              <VSpace v-else v-permission="['plugin:timeline:manage']">
                 <VButton type="danger" @click="handleDeleteInBatch">
                   删除
                 </VButton>
@@ -217,24 +201,24 @@ const handleDeleteInBatch = async () => {
                 @click="handleClearFilters"
               />
               <FilterDropdown
-                v-model="selectedStatus"
-                label="状态"
+                v-model="selectedType"
+                label="类型"
                 :items="[
                   {
                     label: '全部',
                     value: undefined,
                   },
                   {
-                    label: '确认',
-                    value: 'confirm',
+                    label: '重要',
+                    value: 'important',
                   },
                   {
-                    label: '取消',
-                    value: 'cancel',
+                    label: '普通',
+                    value: 'normal',
                   },
                   {
-                    label: '等待',
-                    value: 'pending',
+                    label: '里程碑',
+                    value: 'milestone',
                   },
                 ]"
               />
@@ -271,55 +255,150 @@ const handleDeleteInBatch = async () => {
           </div>
         </div>
       </template>
+
       <VLoading v-if="isLoading" />
-      <Transition v-else-if="!timelineItems.length" appear name="fade">
-        <VEmpty message="当前没有时间轴，你可以尝试刷新" title="没有时间轴">
+
+      <Transition v-else-if="!timelines?.length" appear name="fade">
+        <VEmpty
+          title="暂无时间线记录"
+          message="暂无时间线记录"
+        >
           <template #actions>
             <VSpace>
-              <VButton @click="refetch">
-                刷新
-              </VButton>
+              <VButton @click="refetch()">刷新</VButton>
             </VSpace>
           </template>
         </VEmpty>
       </Transition>
+
       <Transition v-else appear name="fade">
-        <ul
-          class="box-border size-full divide-y divide-gray-100"
-          role="list"
-        >
-          <li v-for="timeline in timelineItems" :key="timeline.metadata.name">
-            <TimelineListItem
-              :timeline="timeline"
-              :is-selected="checkSelection(timeline)"
-            >
-              <template #checkbox>
-                <input
-                  v-model="selectedTimelineNames"
-                  :value="timeline.metadata.name"
-                  name="timeline-checkbox"
-                  type="checkbox"
-                />
-              </template>
-            </TimelineListItem>
-          </li>
-        </ul>
+        <div class="w-full relative overflow-x-auto">
+          <table class="w-full text-sm text-left text-gray-500 widefat">
+            <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+              <tr>
+                <th
+                  v-permission="['plugin:timeline:manage']"
+                  scope="col"
+                  class="px-4 py-3"
+                >
+                  <div class="w-max flex items-center"></div>
+                </th>
+                <th scope="col" class="px-4 py-3">
+                  <div class="w-max flex items-center">名称</div>
+                </th>
+                <th scope="col" class="px-4 py-3">
+                  <div class="w-max flex items-center">图片</div>
+                </th>
+                <th scope="col" class="px-4 py-3">
+                  <div class="w-max flex items-center">类型</div>
+                </th>
+                <th scope="col" class="px-4 py-3">
+                  <div class="w-max flex items-center">时间</div>
+                </th>
+                <th scope="col" class="px-4 py-3">
+                  <div class="w-max flex items-center">描述</div>
+                </th>
+                <th scope="col" class="px-4 py-3">
+                  <div class="w-max flex items-center">关联文章</div>
+                </th>
+                <th
+                  v-permission="['plugin:timeline:manage']"
+                  scope="col"
+                  class="px-4 py-3"
+                >
+                  <div class="w-max flex items-center"></div>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                v-for="timeline in timelines"
+                :key="timeline.metadata.name"
+                class="border-b last:border-none hover:bg-gray-100"
+              >
+                <td class="px-4 py-4" v-permission="['plugin:timeline:manage']">
+                  <input
+                    v-model="selectedTimelines"
+                    :value="timeline.metadata.name"
+                    class="h-4 w-4 rounded border-gray-300 text-indigo-600"
+                    name="timeline-checkbox"
+                    type="checkbox"
+                  />
+                </td>
+                <td class="px-4 py-4">{{ timeline.spec.title }}</td>
+                <td class="px-4 py-4 poster">
+                  <img
+                    v-if="timeline.spec.illustrated"
+                    :src="timeline.spec.illustrated"
+                    :alt="timeline.spec.title"
+                    referrerpolicy="no-referrer"
+                  />
+                  <span v-else>-</span>
+                </td>
+                <td class="px-4 py-4 table-td">
+                  {{ timeline.spec.type === 'important' ? '重要' : timeline.spec.type === 'normal' ? '普通' : '里程碑' }}
+                </td>
+                <td class="px-4 py-4 table-td">
+                  {{ formatDatetime(timeline.spec.timestamp) }}
+                </td>
+                <td class="px-4 py-4">{{ timeline.spec.description || '-' }}</td>
+                <td class="px-4 py-4 table-td">
+                  <a
+                    v-if="timeline.spec.relatedArticle"
+                    :href="timeline.spec.relatedArticle"
+                    target="_blank"
+                    class="text-green-600 hover:underline"
+                  >
+                    查看文章
+                  </a>
+                  <span v-else>-</span>
+                </td>
+                <td class="px-4 py-4 table-td" v-permission="['plugin:timeline:manage']">
+                  <VDropdownItem @click="handleOpenCreateModal(timeline)">
+                    编辑
+                  </VDropdownItem>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </Transition>
+
       <template #footer>
         <VPagination
           v-model:page="page"
           v-model:size="size"
-          page-label="页"
-          size-label="条 / 页"
-          :total-label="`共 ${total} 项数据`"
           :total="total"
           :size-options="[20, 30, 50, 100]"
         />
       </template>
     </VCard>
   </div>
-  <TimelineEditingModal
-    v-model:visible="editingModal"
-    @close="refetch"
-  />
-</template> 
+</template>
+
+<style scoped lang="scss">
+.widefat * {
+  word-wrap: break-word;
+}
+
+.widefat td {
+  vertical-align: top;
+}
+
+.widefat .poster {
+  width: 180px;
+  img {
+    max-width: 100px;
+    max-height: 60px;
+    object-fit: cover;
+    border-radius: 4px;
+  }
+}
+
+.table-td {
+  text-align: left !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+</style> 

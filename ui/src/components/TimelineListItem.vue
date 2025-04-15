@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import {computed} from "vue";
-import {VCard, VSpace, VTag, VButton, VAvatar} from "@halo-dev/components";
-import {formatDistanceToNow} from "date-fns";
-import {zhCN} from "date-fns/locale";
-import type {Timeline} from "@/api/generated";
+import { VButton } from "@halo-dev/components";
+import { computed } from "vue";
+import { formatDatetime } from "@/utils/date";
+import { TimelineType } from "@/api";
+import type { Timeline } from "@/api";
 
 const props = defineProps<{
   timeline: Timeline;
@@ -15,35 +15,16 @@ const emit = defineEmits<{
   (e: "edit", timeline: Timeline): void;
 }>();
 
-const formattedDate = computed(() => {
-  if (!props.timeline.spec.timestamp) return "";
-  try {
-    const date = new Date(props.timeline.spec.timestamp);
-    return formatDistanceToNow(date, {addSuffix: true, locale: zhCN});
-  } catch (e) {
-    return props.timeline.spec.timestamp;
-  }
-});
-
-const typeColor = computed(() => {
-  switch (props.timeline.spec.type) {
-    case "important":
-      return "warning";
-    case "urgent":
-      return "danger";
-    default:
-      return "info";
-  }
-});
-
 const typeLabel = computed(() => {
   switch (props.timeline.spec.type) {
-    case "important":
+    case TimelineType.IMPORTANT:
       return "重要";
-    case "urgent":
-      return "紧急";
-    default:
+    case TimelineType.NORMAL:
       return "普通";
+    case TimelineType.MILESTONE:
+      return "里程碑";
+    default:
+      return "未知";
   }
 });
 
@@ -57,49 +38,92 @@ const handleEdit = () => {
 </script>
 
 <template>
-  <VCard
-    :class="[
-      'group relative flex cursor-pointer flex-col gap-4 p-4 transition-all hover:bg-gray-50',
-      isSelected ? 'bg-gray-50' : '',
-    ]"
-  >
-    <div class="flex items-start justify-between">
-      <div class="flex flex-1 items-start gap-4">
-        <slot name="checkbox" />
-        <div class="flex flex-1 flex-col gap-2">
-          <div class="flex items-center gap-2">
-            <h3 class="text-base font-medium text-gray-900">
-              {{ timeline.spec.title }}
-            </h3>
-            <VTag :type="typeColor">{{ typeLabel }}</VTag>
-            <VTag v-if="timeline.spec.pinned" type="success">置顶</VTag>
-            <VTag v-if="!timeline.spec.visible" type="warning">隐藏</VTag>
-          </div>
-          <p v-if="timeline.spec.description" class="text-sm text-gray-500">
-            {{ timeline.spec.description }}
-          </p>
-          <div class="flex flex-wrap gap-2">
-            <VTag
-              v-for="tag in timeline.spec.tags"
-              :key="tag"
-              type="info"
-              size="sm"
-            >
-              {{ tag }}
-            </VTag>
-          </div>
-          <div class="flex items-center gap-2 text-xs text-gray-500">
-            <span>{{ formattedDate }}</span>
-            <span v-if="timeline.spec.relatedArticle" class="text-primary">
-              关联文章: {{ timeline.spec.relatedArticle }}
-            </span>
-          </div>
-        </div>
-      </div>
+  <thead v-if="!timeline">
+    <tr class="text-xs text-gray-700 uppercase bg-gray-50">
+      <th v-permission="['plugin:timeline:manage']" scope="col" class="px-4 py-3">
+        <div class="w-max flex items-center"></div>
+      </th>
+      <th scope="col" class="px-4 py-3">
+        <div class="w-max flex items-center">名称</div>
+      </th>
+      <th scope="col" class="px-4 py-3">
+        <div class="w-max flex items-center">图片</div>
+      </th>
+      <th scope="col" class="px-4 py-3">
+        <div class="w-max flex items-center">类型</div>
+      </th>
+      <th scope="col" class="px-4 py-3">
+        <div class="w-max flex items-center">时间</div>
+      </th>
+      <th scope="col" class="px-4 py-3">
+        <div class="w-max flex items-center">描述</div>
+      </th>
+      <th scope="col" class="px-4 py-3">
+        <div class="w-max flex items-center">关联文章</div>
+      </th>
+      <th v-permission="['plugin:timeline:manage']" scope="col" class="px-4 py-3">
+        <div class="w-max flex items-center"></div>
+      </th>
+    </tr>
+  </thead>
+  <tr v-else class="border-b last:border-none hover:bg-gray-100">
+    <!-- 选择框 -->
+    <td class="px-4 py-4">
+      <slot name="checkbox" />
+    </td>
+
+    <!-- 图片 -->
+    <td class="px-4 py-4 w-[60px]">
+      <img
+        v-if="timeline.spec.illustrated"
+        :src="timeline.spec.illustrated"
+        :alt="timeline.spec.title"
+        class="h-12 w-12 object-cover rounded"
+        referrerpolicy="no-referrer"
+      />
+      <span v-else>-</span>
+    </td>
+
+    <!-- 名称 -->
+    <td class="px-4 py-4 table-td">
+      {{ timeline.spec.title }}
+    </td>
+
+    <!-- 类型 -->
+    <td class="px-4 py-4 table-td">
+      {{ typeLabel }}
+    </td>
+
+    <!-- 时间 -->
+    <td class="px-4 py-4 table-td">
+      {{ formatDatetime(timeline.spec.timestamp) }}
+    </td>
+
+    <!-- 描述 -->
+    <td class="px-4 py-4">
+      {{ timeline.spec.description || '-' }}
+    </td>
+
+    <!-- 关联文章 -->
+    <td class="px-4 py-4 table-td">
+      <a
+        v-if="timeline.spec.relatedArticle"
+        :href="timeline.spec.relatedArticle"
+        target="_blank"
+        class="text-green-600 hover:underline"
+      >
+        查看文章
+      </a>
+      <span v-else>-</span>
+    </td>
+
+    <!-- 操作按钮 -->
+    <td class="px-4 py-4">
       <div class="flex items-center gap-2">
         <VButton
           v-permission="['plugin:timeline:manage']"
           size="sm"
+          type="default"
           @click="handleEdit"
         >
           编辑
@@ -113,13 +137,15 @@ const handleEdit = () => {
           删除
         </VButton>
       </div>
-    </div>
-    <div v-if="timeline.spec.illustrated" class="mt-2">
-      <img
-        :src="timeline.spec.illustrated"
-        :alt="timeline.spec.title"
-        class="max-h-48 rounded object-cover"
-      />
-    </div>
-  </VCard>
-</template> 
+    </td>
+  </tr>
+</template>
+
+<style scoped>
+.table-td {
+  text-align: left !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+</style> 

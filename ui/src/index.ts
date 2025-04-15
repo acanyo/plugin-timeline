@@ -7,7 +7,7 @@ export default definePlugin({
   components: {},
   routes: [
     {
-      parentName: "Root",
+      parentName: "ToolsRoot",
       route: {
         path: "/timeline",
         name: "Timeline",
@@ -17,7 +17,6 @@ export default definePlugin({
           searchable: true,
           menu: {
             name: "时间线",
-            group: "内容管理",
             icon: markRaw(MingcuteTimeLine),
             priority: 0,
           },
