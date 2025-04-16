@@ -15,7 +15,7 @@ import {
   VSpace
 } from "@halo-dev/components";
 import {useQuery} from "@tanstack/vue-query";
-import {computed, ref, watch} from "vue";
+import {computed, ref, watch, onMounted} from "vue";
 import {formatDatetime} from "@/utils/date";
 import {useRouteQuery} from "@vueuse/router";
 import TimelineEditingModal from "../components/TimelineEditingModal.vue";
@@ -32,6 +32,12 @@ const selectedTimelines = ref<string[]>([]);
 const checkedAll = ref(false);
 const selectedSort = useRouteQuery<string | undefined>("sort");
 const selectedType = useRouteQuery<string | undefined>("type");
+const timelineTypes = ref<{ label: string; value: string | undefined; }[]>([
+  {
+    label: '全部',
+    value: undefined,
+  }
+]);
 
 const page = ref(1);
 const size = ref(20);
@@ -147,6 +153,27 @@ const onEditingModalClose = async () => {
   selectedTimeline.value = undefined;
   refetch();
 };
+
+const fetchTimelineTypes = async () => {
+  try {
+    const response = await timelineApi.listTimelines();
+    const types = new Set(response.items.map((item: Timeline) => item.spec.type));
+    
+    timelineTypes.value = [
+      { label: '全部', value: undefined },
+      ...Array.from(types).map(type => ({
+        label: type,
+        value: type
+      }))
+    ];
+  } catch (error) {
+    console.error('获取时间线类型失败:', error);
+  }
+};
+
+onMounted(() => {
+  fetchTimelineTypes();
+});
 </script>
 
 <template>
@@ -224,24 +251,7 @@ const onEditingModalClose = async () => {
               <FilterDropdown
                 v-model="selectedType"
                 label="类型"
-                :items="[
-                  {
-                    label: '全部',
-                    value: undefined,
-                  },
-                  {
-                    label: '重要',
-                    value: 'important',
-                  },
-                  {
-                    label: '普通',
-                    value: 'normal',
-                  },
-                  {
-                    label: '里程碑',
-                    value: 'milestone',
-                  },
-                ]"
+                :items="timelineTypes"
               />
               <FilterDropdown
                 v-model="selectedSort"
