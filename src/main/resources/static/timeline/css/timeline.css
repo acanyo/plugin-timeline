@@ -349,28 +349,29 @@
   line-height: 1.5;
 }
 
-/* 时间线详情页面样式 */
+/* 时间线详情页面样式 - 增强 */
 .handsome-timeline-detail-page {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 40px 20px;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 50px 20px; /* 统一垂直内边距 */
 }
 
 .handsome-timeline-header {
-  margin-bottom: 40px;
-  text-align: center;
+    margin-bottom: 50px; /* 增加标题和轴线间距 */
+    text-align: center;
 }
 
 .handsome-timeline-back {
-  display: inline-flex;
-  align-items: center;
-  color: var(--handsome-timeline-text);
-  text-decoration: none;
-  margin-bottom: 20px;
-  transition: all 0.3s ease;
-  padding: 10px 20px;
-  border-radius: 30px;
-  background: var(--handsome-timeline-secondary);
+    display: inline-flex;
+    align-items: center;
+    color: var(--handsome-timeline-text);
+    text-decoration: none;
+    margin-bottom: 20px;
+    transition: all 0.3s ease;
+    padding: 10px 20px;
+    border-radius: 30px;
+    background: var(--handsome-timeline-secondary);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .handsome-timeline-back:hover {
@@ -385,116 +386,140 @@
 }
 
 .handsome-timeline-type-title {
-  font-size: 2.5rem;
-  color: var(--handsome-timeline-text);
-  margin: 0;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-size: 2.5rem;
+    color: var(--handsome-timeline-text);
+    margin: 0;
+    font-weight: 600; /* 保持标题字重 */
 }
 
 .handsome-timeline-content {
-  position: relative;
-  padding: 40px 0;
+    position: relative;
+    padding: 40px 0;
 }
 
+/* 中心轴线样式 */
 .handsome-timeline-content::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 50%;
-  width: 2px;
-  height: 100%;
-  background: var(--handsome-timeline-border);
-  transform: translateX(-50%);
+    content: '';
+    position: absolute;
+    top: 10px; /* 稍微向下移动，避开第一个点 */
+    bottom: 10px; /* 稍微向上移动，避免超出最后一个点 */
+    left: 50%;
+    width: 3px; /* 加粗一点 */
+    background: linear-gradient(to bottom, var(--handsome-timeline-primary), var(--handsome-timeline-secondary)); /* 渐变色 */
+    transform: translateX(-50%);
+    border-radius: 3px;
 }
 
 .handsome-timeline-item {
-  position: relative;
-  margin-bottom: 40px;
-  width: 50%;
-  padding: 0 30px;
-  box-sizing: border-box;
+    position: relative;
+    margin-bottom: 40px;
+    width: 50%;
+    padding: 0 40px; /* 增加左右间距 */
+    box-sizing: border-box;
 }
 
+/* 奇数项在左 */
 .handsome-timeline-item:nth-child(odd) {
-  margin-left: 0;
-  margin-right: auto;
+    left: 0;
+    padding-right: 20px; /* 清除右侧内边距 */
+    text-align: right; /* 内容靠右 */
 }
 
+/* 偶数项在右 */
 .handsome-timeline-item:nth-child(even) {
-  margin-left: auto;
-  margin-right: 0;
+    left: 50%; /* 将左边界移到中心线 */
+    padding-left: 20px; /* 清除左侧内边距 */
+    text-align: left; /* 内容靠左 */
 }
 
+/* 时间点标记样式 */
 .handsome-timeline-item::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 20px;
-  height: 20px;
-  background: var(--handsome-timeline-primary);
-  border-radius: 50%;
-  transform: translateX(-50%);
-  box-shadow: 0 0 0 4px var(--handsome-timeline-bg);
+    content: '';
+    position: absolute;
+    top: 5px; /* 调整垂直位置 */
+    width: 18px; /* 稍小一点 */
+    height: 18px;
+    background: var(--handsome-timeline-bg); /* 背景色与容器一致 */
+    border: 3px solid var(--handsome-timeline-primary); /* 主色边框 */
+    border-radius: 50%;
+    z-index: 1; /* 在中心线之上 */
+    /* 根据奇偶项调整位置 */
 }
 
+/* 奇数项的点在右侧 */
+.handsome-timeline-item:nth-child(odd)::before {
+    right: -9px; /* (点宽度/2) */
+    left: auto; 
+}
+
+/* 偶数项的点在左侧 */
+.handsome-timeline-item:nth-child(even)::before {
+    left: -9px; /* -(点宽度/2) */
+}
+
+/* 时间项卡片样式 */
 .handsome-timeline-item-content {
-  background: var(--handsome-timeline-bg);
-  padding: 30px;
-  border-radius: 15px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
+    background: rgba(var(--handsome-timeline-bg-rgb, 255, 255, 255), 0.85);
+    backdrop-filter: blur(8px);
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    border: 1px solid rgba(var(--handsome-timeline-border-rgb, 224, 224, 224), 0.3);
+    position: relative; /* 确保内容在点标记之上 */
 }
 
 .handsome-timeline-item-content:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+    transform: translateY(-5px) scale(1.02); /* 悬停效果 */
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
 }
 
-.handsome-timeline-title {
-  margin: 0 0 15px;
-  color: var(--handsome-timeline-text);
-  font-size: 1.4rem;
+[data-theme="dark"] .handsome-timeline-item-content {
+    background: rgba(var(--handsome-timeline-bg-rgb, 26, 26, 26), 0.8);
+    border-color: rgba(var(--handsome-timeline-border-rgb, 64, 64, 64), 0.4);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
 }
 
-.handsome-timeline-description {
-  margin: 0 0 15px;
-  color: var(--handsome-timeline-text);
-  opacity: 0.8;
-  line-height: 1.6;
+[data-theme="dark"] .handsome-timeline-item-content:hover {
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
 }
 
+/* 时间戳样式 */
 .handsome-timeline-timestamp {
-  display: block;
-  color: var(--handsome-timeline-primary);
-  font-size: 1rem;
-  font-weight: 500;
+    display: block;
+    color: var(--handsome-timeline-primary);
+    font-size: 0.9rem; /* 调整大小 */
+    font-weight: 500;
+    margin-top: 15px; /* 与描述间距 */
 }
 
-/* 响应式设计 */
+/* 响应式调整 */
 @media (max-width: 768px) {
-  .handsome-timeline-categories {
-    grid-template-columns: 1fr;
-    gap: 20px;
-  }
+    /* 中心线移到左侧 */
+    .handsome-timeline-content::before {
+        left: 9px; /* 半个点的宽度 */
+        transform: translateX(0);
+    }
 
-  .handsome-timeline-item {
-    width: 100%;
-    padding: 0 0 0 30px;
-  }
+    /* 所有项都在右侧 */
+    .handsome-timeline-item,
+    .handsome-timeline-item:nth-child(odd),
+    .handsome-timeline-item:nth-child(even) {
+        width: 100%;
+        left: 0; /* 重置left */
+        padding-left: 45px; /* 左侧留出空间给点和线 */
+        padding-right: 0; /* 清除右侧内边距 */
+        text-align: left; /* 全部左对齐 */
+        margin-bottom: 30px; /* 调整间距 */
+    }
 
-  .handsome-timeline-item::before {
-    left: 0;
-  }
-
-  .handsome-timeline-content::before {
-    left: 0;
-  }
-
-  .handsome-timeline-main-title,
-  .handsome-timeline-type-title {
-    font-size: 2rem;
-  }
+    /* 点标记移到左侧 */
+    .handsome-timeline-item::before,
+    .handsome-timeline-item:nth-child(odd)::before,
+    .handsome-timeline-item:nth-child(even)::before {
+        left: 0; /* 对齐到新的左侧轴线 */
+        top: 8px; /* 微调 */
+    }
 }
 
 /* 黑暗模式切换按钮样式 */
@@ -604,18 +629,9 @@
 }
 
 [data-theme="dark"] .handsome-timeline-back {
-    background: var(--handsome-timeline-secondary);
+    background: rgba(var(--handsome-timeline-secondary-rgb, 45, 45, 45), 0.8);
     color: var(--handsome-timeline-text);
-}
-
-[data-theme="dark"] .handsome-timeline-item-content {
-    background: rgba(var(--handsome-timeline-bg-rgb, 26, 26, 26), 0.8);
-    border: 1px solid rgba(var(--handsome-timeline-border-rgb, 64, 64, 64), 0.4);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-}
-
-[data-theme="dark"] .handsome-timeline-item::before {
-    box-shadow: 0 0 0 4px rgba(var(--handsome-timeline-bg-rgb, 26, 26, 26), 1);
+    box-shadow: none;
 }
 
 /* Ensure body/html background changes FORCEFULLY in dark mode */

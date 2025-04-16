@@ -39,6 +39,23 @@ public class TimelineEndpoint implements CustomEndpoint {
                 TimelineQuery.buildParameters(builder);
                 }
             )
+            .GET("findByType/{type}", this::findByType, builder -> {
+                    builder.operationId("Find Timeline By Type")
+                        .tag(tag)
+                        .description("根据类型获取时间线信息")
+                        .parameter(
+                            parameterBuilder()
+                                .name("type")
+                                .in(ParameterIn.PATH)
+                                .required(true)
+                                .description("时间线类型")
+                        )
+                        .response(
+                            responseBuilder()
+                                .implementationArray(Timeline.class)
+                        );
+                }
+            )
             .build();
     }
 
@@ -48,10 +65,15 @@ public class TimelineEndpoint implements CustomEndpoint {
             .flatMap(timelines -> ServerResponse.ok().bodyValue(timelines));
     }
 
+    Mono<ServerResponse> findByType(ServerRequest request) {
+        String type = request.pathVariable("type");
+        return timelineSvc.findByType(type)
+            .collectList()
+            .flatMap(timelines -> ServerResponse.ok().bodyValue(timelines));
+    }
 
     @Override
     public GroupVersion groupVersion() {
         return GroupVersion.parseAPIVersion("api.timeline.lik.cc/v1alpha1");
     }
-
 }

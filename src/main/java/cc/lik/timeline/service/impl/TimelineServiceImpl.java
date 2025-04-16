@@ -27,6 +27,7 @@ import run.halo.app.notification.NotificationReasonEmitter;
 import run.halo.app.plugin.ReactiveSettingFetcher;
 
 import static run.halo.app.extension.index.query.QueryFactory.all;
+import static run.halo.app.extension.index.query.QueryFactory.equal;
 
 @Service
 @RequiredArgsConstructor
@@ -65,8 +66,17 @@ public class TimelineServiceImpl implements TimelineService {
             .flatMap(Mono::just);
     }
 
+    @Override
+    public Flux<Timeline> findByType(String type) {
+        Assert.hasText(type, "类型不能为空");
+        var listOptions = new ListOptions();
+        var query = equal("spec.type", type);
+        listOptions.setFieldSelector(FieldSelector.of(query));
+        return client.listAll(Timeline.class, listOptions, defaultSort())
+            .flatMap(Mono::just);
+    }
+
     static Sort defaultSort() {
         return Sort.by("spec.timestamp").descending();
     }
-
 }

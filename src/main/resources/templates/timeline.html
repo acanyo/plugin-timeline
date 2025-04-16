@@ -62,7 +62,9 @@
         </div>
 
         <!-- 时间线详情页面 -->
-        <div th:if="${type != null}" class="handsome-timeline-detail-page">
+        <div th:if="${type != null}" 
+             class="handsome-timeline-detail-page" 
+             th:classappend="'timeline-type--' + ${type.value}">
             <div class="handsome-timeline-header">
                 <a href="/timelines" class="handsome-timeline-back">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

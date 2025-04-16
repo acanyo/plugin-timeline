@@ -12,4 +12,11 @@ public interface TimelineService {
     Mono<ListResult<Timeline>> listTimeline(TimelineQuery query);
     Mono<BaseConfig> getConfigByGroupName();
     Flux<Timeline> listAll();
+
+    /**
+     * 根据类型查询时间线数据
+     * @param type 时间线类型
+     * @return 该类型的所有时间线数据，按时间戳降序排序
+     */
+    Flux<Timeline> findByType(String type);
 }
