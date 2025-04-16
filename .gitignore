@@ -6,8 +6,7 @@ logs/
 ### Gradle
 .gradle
 /build/
-/uiDemo/
-/ui_副本/
+/doubanUIDemo/
 /out/
 !gradle/wrapper/gradle-wrapper.jar
 bin/
