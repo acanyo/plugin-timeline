@@ -357,7 +357,7 @@ const onEditingModalClose = async () => {
                   <span v-else>-</span>
                 </td>
                 <td class="px-4 py-4 table-td">
-                  {{ timeline.spec.type === 'important' ? '重要' : timeline.spec.type === 'normal' ? '普通' : '里程碑' }}
+                  {{ timeline.spec.type}}
                 </td>
                 <td class="px-4 py-4 table-td">
                   {{ timeline.spec.timestamp }}

@@ -34,6 +34,8 @@ public class TimelineHeadProcessor implements TemplateHeadProcessor {
             <!-- timeline start -->
             <link rel="stylesheet" type="text/css" href="/plugins/timeline/assets/static/timeline/css/timeline.css?version=${version}" />
             <script type="text/javascript" src="/plugins/timeline/assets/static/timeline/js/timeline.js?version=${version}"></script>
+            <link rel="stylesheet" type="text/css" href="/plugins/timeline/assets/static/css/handsome-timeline-component.css?version=${version}" />
+            <script type="text/javascript" src="/plugins/timeline/assets/static/js/handsome-timeline-component.js?version=${version}"></script>
             <!-- timeline end -->
             """, properties);
 

@@ -156,8 +156,7 @@ const handleSaveTimeline = async () => {
   }
 };
 onMounted(async () => {
-  const types = await timelineApi.listTimelineTypes();
-  timelineTypes.value = types;
+  timelineTypes.value = await timelineApi.listTimelineTypes();
 });
 </script>
 

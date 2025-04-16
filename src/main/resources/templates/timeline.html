@@ -41,28 +41,10 @@
     <!-- Container is now transparent, content sits above body::before -->
     <div class="handsome-timeline-container">
         <!-- 分类页面 -->
-        <div th:if="${type == null}" class="handsome-timeline-categories-page">
-            <h1 class="handsome-timeline-main-title" 
-                th:text="${settings?.title != null and !#strings.isEmpty(settings.title) ? settings.title + '分类' : '时间线分类'}">时间线分类</h1>
-            <div class="handsome-timeline-categories">
-                <div th:each="type : ${timelineTypes}" class="handsome-timeline-category-card">
-                    <a th:href="@{'/timelines/' + ${type.value}}" class="handsome-timeline-category-link">
-                        <div class="handsome-timeline-category-icon-wrapper">
-                            <svg class="handsome-timeline-category-icon" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/>
-                            </svg>
-                        </div>
-                        <div class="handsome-timeline-category-info">
-                            <h3 th:text="${type.label}" class="handsome-timeline-category-title"></h3>
-                            <p class="handsome-timeline-category-description" th:text="${type.count} + ' 条记录'"></p>
-                        </div>
-                    </a>
-                </div>
-            </div>
-        </div>
+        <div th:if="${type == null}" id="timeline-categories"></div>
 
         <!-- 时间线详情页面 -->
-        <div th:if="${type != null}" 
+        <div th:if="${type != null}" id="timeline-detail" 
              class="handsome-timeline-detail-page" 
              th:classappend="'timeline-type--' + ${type.value}">
             <div class="handsome-timeline-header">
@@ -86,5 +68,35 @@
             </div>
         </div>
     </div>
+
+    <script th:inline="javascript">
+        // 获取后端数据
+        const type = /*[[${type}]]*/ null;
+        const timelineTypes = /*[[${timelineTypes}]]*/ [];
+        const timelines = /*[[${timelines}]]*/ [];
+        const settings = /*[[${settings}]]*/ {};
+
+        // 初始化分类页面
+        if (!type) {
+            new HandsomeTimelineComponent('#timeline-categories', {
+                type: '',
+                data: timelineTypes.map(t => ({
+                    spec: {
+                        title: t.label,
+                        description: t.count + ' 条记录',
+                        timestamp: new Date().toISOString(),
+                        link: '/timelines/' + t.value
+                    }
+                }))
+            });
+        }
+        // 初始化详情页面
+        else {
+            new HandsomeTimelineComponent('#timeline-detail', {
+                type: type.value,
+                data: timelines
+            });
+        }
+    </script>
 </body>
 </html>
