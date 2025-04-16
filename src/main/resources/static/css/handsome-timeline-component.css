@@ -1,81 +1,280 @@
 /* 时间轴容器 */
 .handsome-timeline-list {
     position: relative;
-    max-width: 1200px;
+    max-width: 800px;
     margin: 0 auto;
     padding: 20px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
 /* 时间轴项目 */
 .handsome-timeline-list-item {
     position: relative;
-    padding: 20px 0 20px 30px;
-    border-left: 2px solid var(--timeline-border-color, #e0e0e0);
-    margin-bottom: 20px;
+    padding: 24px 0 24px 32px;
+    border-left: 1px solid var(--timeline-border-color, rgba(229, 231, 235, 0.8));
+    margin-bottom: 0;
     transition: all 0.3s ease;
 }
 
 .handsome-timeline-list-item::before {
     content: '';
     position: absolute;
-    left: -6px;
-    top: 28px;
+    left: -5px;
+    top: 32px;
     width: 10px;
     height: 10px;
     border-radius: 50%;
-    background: var(--timeline-dot-color, #1890ff);
-    border: 2px solid var(--timeline-dot-border-color, #fff);
+    background: var(--timeline-dot-color, #fff);
+    border: 2px solid var(--timeline-dot-border-color, #3b82f6);
     transition: all 0.3s ease;
+    z-index: 1;
 }
 
 .handsome-timeline-list-item:hover::before {
     transform: scale(1.2);
-    background: var(--timeline-dot-hover-color, #40a9ff);
+    background: var(--timeline-dot-border-color, #3b82f6);
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
 }
 
 /* 时间轴内容 */
-.handsome-timeline-list-title {
-    font-size: 18px;
-    font-weight: 500;
-    color: var(--timeline-title-color, #262626);
-    margin-bottom: 8px;
-    line-height: 1.4;
+.handsome-timeline-list-content {
+    background: transparent;
+    padding: 0;
+    box-shadow: none;
+    transition: all 0.3s ease;
 }
 
-.handsome-timeline-list-desc {
-    font-size: 14px;
-    color: var(--timeline-desc-color, #595959);
-    margin-bottom: 8px;
-    line-height: 1.6;
+.handsome-timeline-list-item:hover .handsome-timeline-list-content {
+    transform: translateX(8px);
 }
 
 .handsome-timeline-list-time {
+    font-size: 14px;
+    color: var(--timeline-time-color, #6b7280);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    letter-spacing: 0.3px;
+}
+
+.handsome-timeline-list-time svg {
+    width: 16px;
+    height: 16px;
+    margin-right: 6px;
+    color: var(--timeline-dot-border-color, #3b82f6);
+    opacity: 0.8;
+}
+
+.handsome-timeline-list-title {
+    font-size: 17px;
+    font-weight: 500;
+    color: var(--timeline-title-color, #1f2937);
+    margin-bottom: 10px;
+    line-height: 1.4;
+    letter-spacing: 0.2px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.handsome-timeline-list-title svg {
+    width: 18px;
+    height: 18px;
+    color: var(--timeline-dot-border-color, #3b82f6);
+    opacity: 0;
+    transform: translateX(-10px);
+    transition: all 0.3s ease;
+}
+
+.handsome-timeline-list-item:hover .handsome-timeline-list-title {
+    color: var(--timeline-dot-border-color, #3b82f6);
+}
+
+.handsome-timeline-list-item:hover .handsome-timeline-list-title svg {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.handsome-timeline-list-desc {
+    font-size: 15px;
+    color: var(--timeline-desc-color, #4b5563);
+    margin-bottom: 12px;
+    line-height: 1.6;
+    letter-spacing: 0.2px;
+    position: relative;
+    padding-left: 24px;
+}
+
+.handsome-timeline-list-desc::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.7em;
+    width: 16px;
+    height: 2px;
+    background: var(--timeline-dot-border-color, #3b82f6);
+    opacity: 0.3;
+}
+
+.handsome-timeline-list-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.handsome-timeline-list-category {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    background: var(--timeline-tag-bg, rgba(59, 130, 246, 0.1));
+    color: var(--timeline-dot-border-color, #3b82f6);
+    transition: all 0.3s ease;
+    gap: 4px;
+}
+
+.handsome-timeline-list-category svg {
+    width: 14px;
+    height: 14px;
+}
+
+.handsome-timeline-list-category:hover {
+    background: var(--timeline-dot-border-color, #3b82f6);
+    color: #fff;
+    transform: translateY(-1px);
+}
+
+.handsome-timeline-list-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 12px 0;
+}
+
+.handsome-timeline-list-tag {
+    padding: 2px 8px;
+    border-radius: 4px;
     font-size: 12px;
-    color: var(--timeline-time-color, #8c8c8c);
+    background: var(--timeline-tag-light-bg, rgba(0, 0, 0, 0.05));
+    color: var(--timeline-tag-light-color, #4b5563);
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.handsome-timeline-list-tag svg {
+    width: 12px;
+    height: 12px;
+}
+
+.handsome-timeline-list-tag:hover {
+    background: var(--timeline-tag-light-bg-hover, rgba(0, 0, 0, 0.08));
+    transform: translateY(-1px);
+}
+
+.handsome-timeline-list-image {
+    margin: 16px 0;
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.handsome-timeline-list-image img {
+    width: 100%;
+    max-height: 240px;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.handsome-timeline-list-image::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, transparent 50%, rgba(0, 0, 0, 0.05));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.handsome-timeline-list-image:hover img {
+    transform: scale(1.03);
+}
+
+.handsome-timeline-list-image:hover::after {
+    opacity: 1;
+}
+
+.handsome-timeline-list-article {
+    display: inline-flex;
+    align-items: center;
+    color: var(--timeline-dot-border-color, #3b82f6);
+    font-size: 14px;
+    text-decoration: none;
+    margin-top: 12px;
+    transition: all 0.3s ease;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    background: var(--timeline-tag-bg, rgba(59, 130, 246, 0.1));
+}
+
+.handsome-timeline-list-article:hover {
+    background: var(--timeline-dot-border-color, #3b82f6);
+    color: #fff;
+    transform: translateY(-1px);
+}
+
+.handsome-timeline-list-article svg {
+    width: 16px;
+    height: 16px;
+    transition: transform 0.3s ease;
+}
+
+.handsome-timeline-list-article:hover svg {
+    transform: translateX(2px);
+}
+
+/* 置顶项样式 */
+.handsome-timeline-list-item[data-pinned="true"] {
+    background: var(--timeline-pinned-bg, rgba(59, 130, 246, 0.02));
+}
+
+.handsome-timeline-list-item[data-pinned="true"]::before {
+    background: var(--timeline-dot-border-color, #3b82f6);
+    border-color: var(--timeline-dot-border-color, #3b82f6);
 }
 
 /* 暗色模式 */
 [data-theme="dark"] .handsome-timeline-list {
-    --timeline-border-color: #333;
-    --timeline-dot-color: #177ddc;
-    --timeline-dot-border-color: #1f1f1f;
-    --timeline-dot-hover-color: #40a9ff;
-    --timeline-title-color: #e0e0e0;
-    --timeline-desc-color: #a0a0a0;
-    --timeline-time-color: #808080;
+    --timeline-border-color: rgba(75, 85, 99, 0.3);
+    --timeline-dot-color: #1f2937;
+    --timeline-dot-border-color: #60a5fa;
+    --timeline-title-color: #f3f4f6;
+    --timeline-desc-color: #9ca3af;
+    --timeline-time-color: #6b7280;
+    --timeline-tag-bg: rgba(59, 130, 246, 0.15);
+    --timeline-tag-light-bg: rgba(255, 255, 255, 0.08);
+    --timeline-tag-light-bg-hover: rgba(255, 255, 255, 0.12);
+    --timeline-tag-light-color: #9ca3af;
+    --timeline-pinned-bg: rgba(59, 130, 246, 0.1);
 }
 
 /* 动画效果 */
 .handsome-timeline-list-item {
     opacity: 0;
-    transform: translateX(-20px);
-    animation: timeline-slide-in 0.3s ease forwards;
+    transform: translateY(20px);
+    animation: timeline-slide-in 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    animation-delay: calc(var(--item-index, 0) * 0.1s);
 }
 
 @keyframes timeline-slide-in {
     to {
         opacity: 1;
-        transform: translateX(0);
+        transform: translateY(0);
     }
 }
 
@@ -86,6 +285,42 @@
     }
     
     .handsome-timeline-list-item {
+        padding-left: 24px;
+    }
+
+    .handsome-timeline-list-title {
+        font-size: 16px;
+    }
+
+    .handsome-timeline-list-desc {
+        font-size: 14px;
         padding-left: 20px;
     }
+
+    .handsome-timeline-list-image img {
+        max-height: 180px;
+    }
+}
+
+/* 状态样式 */
+.handsome-timeline-list-empty,
+.handsome-timeline-list-loading,
+.handsome-timeline-list-error {
+    text-align: center;
+    padding: 40px 0;
+    color: var(--timeline-time-color, #6b7280);
+    font-size: 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.handsome-timeline-list-empty svg,
+.handsome-timeline-list-loading svg,
+.handsome-timeline-list-error svg {
+    width: 40px;
+    height: 40px;
+    color: var(--timeline-dot-border-color, #3b82f6);
+    opacity: 0.5;
 } 

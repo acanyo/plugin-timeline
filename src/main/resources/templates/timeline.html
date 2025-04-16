@@ -75,16 +75,23 @@
                 <h1 class="handsome-timeline-type-title" th:text="${type.label}"></h1>
             </div>
             
-            <div class="handsome-timeline-content">
-                <div th:each="timeline : ${timelines}" class="handsome-timeline-item">
-                    <div class="handsome-timeline-item-content">
-                        <h3 class="handsome-timeline-title" th:text="${timeline.spec.title}"></h3>
-                        <p class="handsome-timeline-description" th:text="${timeline.spec.description}"></p>
-                        <span class="handsome-timeline-timestamp" th:text="${timeline.spec.timestamp}"></span>
-                    </div>
-                </div>
-            </div>
+            <!-- 使用新的时间轴组件 -->
+            <div id="timeline-list"></div>
         </div>
     </div>
+
+    <script th:inline="javascript">
+        // 获取后端数据
+        const type = /*[[${type}]]*/ null;
+        const timelines = /*[[${timelines}]]*/ [];
+
+        // 如果是详情页面，初始化时间轴组件
+        if (type) {
+            new HandsomeTimelineList('#timeline-list', {
+                type: type.label,
+                data: timelines
+            });
+        }
+    </script>
 </body>
 </html>
