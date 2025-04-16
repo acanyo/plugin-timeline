@@ -71,7 +71,7 @@ public class TimelineRouter {
     @Bean
     RouterFunction<ServerResponse> timelineRouterFunction() {
         return route(GET("/timelines"), this::renderTimelinePage)
-            .andRoute(GET("/timelines/{type}"), this::renderTimelineTypePage);
+            .andRoute(GET("/timelines/{typeValue}"), this::renderTimelineTypePage);
     }
 
     private Mono<ServerResponse> renderTimelinePage(ServerRequest request) {
@@ -82,9 +82,7 @@ public class TimelineRouter {
                 .flatMap(timelines -> {
                     Map<String, Object> model = new HashMap<>();
                     model.put("settings", config);
-                    model.put("timelines", FormatDate(timelines));
                     model.put("timelineTypes", getTimelineTypes(timelines));
-                    model.put("type", ""); // 空字符串表示首页
                     return templateNameResolver.resolveTemplateNameOrDefault(request.exchange(), "timeline")
                         .flatMap(templateName -> ServerResponse.ok()
                             .render(templateName, model));
@@ -97,22 +95,27 @@ public class TimelineRouter {
     }
 
     private Mono<ServerResponse> renderTimelineTypePage(ServerRequest request) {
-        String type = request.pathVariable("type");
-        log.info("开始渲染类型[{}]的时间线页面", type);
+        String typeValue = request.pathVariable("typeValue");
+        log.info("开始渲染类型[{}]的时间线页面", typeValue);
         
         return timelineSvc.getConfigByGroupName()
             .flatMap(config -> timelineSvc.listAll()
                 .collectList()
                 .flatMap(allTimelines -> {
-                    List<Timeline> typeTimelines = "all".equals(type) ? 
-                        allTimelines : 
-                        filterTimelinesByType(allTimelines, type);
-                    
+                    List<Timeline> typeTimelines = filterTimelinesByType(allTimelines, typeValue);
+                    List<Map<String, String>> timelineTypes = getTimelineTypes(allTimelines);
+
+                    Map<String, String> currentType = timelineTypes.stream()
+                        .filter(t -> t.get("value").equals(typeValue))
+                        .findFirst()
+                        .orElse(null);
+
                     Map<String, Object> model = new HashMap<>();
                     model.put("settings", config);
                     model.put("timelines", FormatDate(typeTimelines));
-                    model.put("timelineTypes", getTimelineTypes(allTimelines));
-                    model.put("type", type);
+                    model.put("timelineTypes", timelineTypes);
+                    model.put("type", currentType);
+                    
                     return templateNameResolver.resolveTemplateNameOrDefault(request.exchange(), "timeline")
                         .flatMap(templateName -> ServerResponse.ok()
                             .render(templateName, model));
@@ -125,6 +128,10 @@ public class TimelineRouter {
     }
 
     private List<Map<String, String>> getTimelineTypes(List<Timeline> timelines) {
+        Map<String, Long> typeCounts = timelines.stream()
+            .map(timeline -> timeline.getSpec().getType())
+            .collect(Collectors.groupingBy(type -> type, Collectors.counting()));
+
         return timelines.stream()
             .map(timeline -> timeline.getSpec().getType())
             .distinct()
@@ -132,9 +139,10 @@ public class TimelineRouter {
                 Map<String, String> typeMap = new HashMap<>();
                 typeMap.put("label", type);
                 typeMap.put("value", PinyinUtil.getFirstLetters(type));
+                typeMap.put("count", String.valueOf(typeCounts.getOrDefault(type, 0L)));
                 return typeMap;
             })
-            .sorted((a, b) -> a.get("value").compareTo(b.get("value")))
+            .sorted(Comparator.comparing(map -> map.get("value")))
             .collect(Collectors.toList());
     }
 

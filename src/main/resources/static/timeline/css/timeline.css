@@ -1,95 +1,675 @@
-/* 时间线主容器 */
-.handsome-timeline-container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap");
+
+
+:root {
+  --handsome-timeline-bg-color: rgba(16 18 27 / 40%);
+  --handsome-timeline-border-color: rgba(113 119 144 / 25%);
+  --handsome-timeline-color: #f9fafb;
+  --handsome-timeline-inactive-color: rgb(113 119 144 / 78%);
+  --handsome-timeline-body-font: "Poppins", sans-serif;
+  --handsome-timeline-hover-menu-bg: rgba(12 15 25 / 30%);
+  --handsome-timeline-content-title-color: #999ba5;
+  --handsome-timeline-content-bg: rgb(146 151 179 / 13%);
+  --handsome-timeline-button-inactive: rgb(249 250 251 / 55%);
+  --handsome-timeline-dropdown-bg: #21242d;
+  --handsome-timeline-dropdown-hover: rgb(42 46 60);
+  --handsome-timeline-popup-bg: rgb(22 25 37);
+  --handsome-timeline-search-bg: #14162b;
+  --handsome-timeline-overlay-bg: rgba(36, 39, 59, 0.3);
+  --handsome-timeline-scrollbar-bg: rgb(1 2 3 / 40%);
+  --handsome-timeline-primary: #4a90e2;
+  --handsome-timeline-secondary: #f5f5f5;
+  --handsome-timeline-text: #333;
+  --handsome-timeline-bg: #fff;
+  --handsome-timeline-border: #e0e0e0;
+  --handsome-timeline-primary-rgb: 74, 144, 226;
+  --handsome-timeline-secondary-rgb: 245, 245, 245;
+  --handsome-timeline-text-rgb: 51, 51, 51;
+  --handsome-timeline-bg-rgb: 255, 255, 255;
+  --handsome-timeline-border-rgb: 224, 224, 224;
 }
 
-/* 时间线类型导航 */
-.handsome-timeline-types {
+/* Apply dark theme variables when data-theme="dark" is on body or html */
+[data-theme="dark"] {
+  --handsome-timeline-primary: #64b5f6;
+  --handsome-timeline-secondary: #2d2d2d;
+  --handsome-timeline-text: #f5f5f5;
+  --handsome-timeline-bg: #1a1a1a;
+  --handsome-timeline-border: #404040;
+  --handsome-timeline-primary-rgb: 100, 181, 246;
+  --handsome-timeline-secondary-rgb: 45, 45, 45;
+  --handsome-timeline-text-rgb: 245, 245, 245;
+  --handsome-timeline-bg-rgb: 26, 26, 26;
+  --handsome-timeline-border-rgb: 64, 64, 64;
+}
+
+.handsome-timeline-light-mode {
+  --handsome-timeline-bg-color: rgb(255 255 255 / 31%);
+  --handsome-timeline-color: #3c3a3a;
+  --handsome-timeline-inactive-color: #333333;
+  --handsome-timeline-button-inactive: #3c3a3a;
+  --handsome-timeline-search-bg: rgb(255 255 255 / 31%);
+  --handsome-timeline-dropdown-bg: #f7f7f7;
+  --handsome-timeline-overlay-bg: rgb(255 255 255 / 30%);
+  --handsome-timeline-dropdown-hover: rgb(236 236 236);
+  --handsome-timeline-border-color: rgb(255 255 255 / 35%);
+  --handsome-timeline-popup-bg: rgb(255 255 255);
+  --handsome-timeline-hover-menu-bg: rgba(255 255 255 / 35%);
+  --handsome-timeline-scrollbar-bg: rgb(255 253 253 / 57%);
+  --handsome-timeline-content-title-color: var(--handsome-timeline-color);
+}
+
+/* Remove direct body styling */
+/* 
+body {
+    background-color: var(--handsome-timeline-bg); 
+    color: var(--handsome-timeline-text);
+}
+*/
+
+.handsome-timeline-container {
+    font-family: var(--handsome-timeline-body-font);
+    background-size: cover;
+    background-position: center;
+    /* Remove the container background color to let video show through */
+    /* background-color: var(--handsome-timeline-bg); */ 
     display: flex;
     justify-content: center;
-    margin-bottom: 20px;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
+    min-height: 100vh; 
+    margin: 0 auto;
+    position: relative;
+    z-index: 1; /* Ensure container is above video */
+    padding: 60px 40px;
+    max-width: 1400px;
+    box-sizing: border-box;
+}
+
+.handsome-timeline-dark-light {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--handsome-timeline-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  transition: all 0.3s ease;
+}
+
+.handsome-timeline-dark-light:hover {
+  transform: scale(1.1);
+}
+
+.handsome-timeline-types {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
 }
 
 .handsome-timeline-type {
-    margin: 0 10px;
+  background-color: var(--handsome-timeline-content-bg);
+  padding: 10px 20px;
+  border-radius: 20px;
+  transition: 0.3s;
+}
+
+.handsome-timeline-type:hover {
+  background-color: var(--handsome-timeline-hover-menu-bg);
 }
 
 .handsome-timeline-type a {
-    text-decoration: none;
-    color: #666;
-    padding: 5px 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    transition: background 0.3s;
+  text-decoration: none;
+  color: var(--handsome-timeline-color);
 }
 
-.handsome-timeline-type a:hover {
-    background: #f5f5f5;
-}
-
-/* 时间线内容区域 */
 .handsome-timeline-content {
-    background: #fff;
-    border-radius: 8px;
-    padding: 20px;
+  position: relative;
+  padding: 20px 0;
 }
 
-/* 时间线项目 */
+.handsome-timeline-content::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 2px;
+  height: 100%;
+  background: var(--handsome-timeline-border);
+  transform: translateX(-50%);
+}
+
 .handsome-timeline-item {
-    margin-bottom: 20px;
-    border-left: 2px solid #e5e7eb;
-    padding-left: 20px;
-    position: relative;
+  position: relative;
+  margin-bottom: 30px;
+  width: 50%;
+  padding: 0 30px;
+  box-sizing: border-box;
+}
+
+.handsome-timeline-item:nth-child(odd) {
+  margin-left: 0;
+  margin-right: auto;
+}
+
+.handsome-timeline-item:nth-child(even) {
+  margin-left: auto;
+  margin-right: 0;
 }
 
 .handsome-timeline-item::before {
-    content: '';
-    position: absolute;
-    left: -6px;
-    top: 0;
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: #3b82f6;
-    border: 2px solid #fff;
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 20px;
+  height: 20px;
+  background: var(--handsome-timeline-primary);
+  border-radius: 50%;
+  transform: translateX(-50%);
 }
 
 .handsome-timeline-item-content {
-    background: #fff;
-    border-radius: 8px;
-    padding: 15px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  background: var(--handsome-timeline-bg);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* 标题和描述 */
 .handsome-timeline-title {
-    margin: 0 0 10px 0;
-    color: #333;
+  margin: 0 0 10px;
+  color: var(--handsome-timeline-text);
+  font-size: 1.2rem;
 }
 
 .handsome-timeline-description {
-    margin: 0;
-    color: #666;
+  margin: 0 0 10px;
+  color: var(--handsome-timeline-text);
+  opacity: 0.8;
+  line-height: 1.6;
 }
 
-/* 时间戳 */
 .handsome-timeline-timestamp {
-    display: block;
-    text-align: right;
-    font-size: 0.9em;
-    color: #999;
-    margin-top: 10px;
+  display: block;
+  color: var(--handsome-timeline-primary);
+  font-size: 0.9rem;
 }
 
-/* 响应式布局 */
+/* 响应式设计 */
 @media (max-width: 768px) {
-    .handsome-timeline-container {
-        padding: 10px;
+  .handsome-timeline-item {
+    width: 100%;
+    padding: 0 0 0 30px;
+  }
+
+  .handsome-timeline-item::before {
+    left: 0;
+  }
+
+  .handsome-timeline-content::before {
+    left: 0;
+  }
+}
+
+/* 滚动条样式 */
+.handsome-timeline-container::-webkit-scrollbar {
+  width: 6px;
+  border-radius: 10px;
+}
+
+.handsome-timeline-container::-webkit-scrollbar-thumb {
+  background: var(--handsome-timeline-scrollbar-bg);
+  border-radius: 10px;
+}
+
+/* 分类页面样式 */
+.handsome-timeline-categories-page {
+  text-align: left;
+  padding: 40px 0;
+  width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.handsome-timeline-main-title {
+  font-size: 1.8rem;
+  color: var(--handsome-timeline-text);
+  margin-bottom: 30px;
+  font-weight: 600;
+  text-shadow: none;
+  padding: 0;
+}
+
+.handsome-timeline-categories {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 25px;
+  padding: 0;
+}
+
+.handsome-timeline-category-card {
+    /* Adjust alpha value (last number in rgba) */
+    background: rgba(var(--handsome-timeline-bg-rgb, 255, 255, 255), 0.75); /* Slightly less transparent */
+    backdrop-filter: blur(10px); 
+    border-radius: 12px; 
+    overflow: hidden; 
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    border: 1px solid rgba(var(--handsome-timeline-border-rgb, 224, 224, 224), 0.2);
+    position: relative; 
+}
+
+.handsome-timeline-category-link {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 25px;
+  text-decoration: none;
+  color: var(--handsome-timeline-text);
+  height: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+.handsome-timeline-category-icon-wrapper {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(var(--handsome-timeline-primary-rgb, 74, 144, 226), 0.1);
+  border-radius: 10px;
+  transition: all 0.3s ease;
+  z-index: 2;
+}
+
+[data-theme="dark"] .handsome-timeline-category-icon-wrapper {
+  background: rgba(var(--handsome-timeline-primary-rgb, 100, 181, 246), 0.15);
+}
+
+.handsome-timeline-category-card:hover .handsome-timeline-category-icon-wrapper {
+  transform: scale(1.1);
+}
+
+.handsome-timeline-category-icon {
+  width: 28px;
+  height: 28px;
+  color: var(--handsome-timeline-primary) !important;
+}
+
+.handsome-timeline-category-info {
+  flex: 1;
+  text-align: left;
+  background: transparent;
+  backdrop-filter: none;
+  border-radius: 0;
+  padding: 0;
+  box-shadow: none;
+  width: auto;
+  border: none;
+}
+
+.handsome-timeline-category-title {
+  margin: 0;
+  font-size: 1.2rem;
+  color: var(--handsome-timeline-text) !important;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.handsome-timeline-category-description {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--handsome-timeline-text) !important;
+  opacity: 0.7;
+  line-height: 1.5;
+}
+
+/* 时间线详情页面样式 */
+.handsome-timeline-detail-page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.handsome-timeline-header {
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.handsome-timeline-back {
+  display: inline-flex;
+  align-items: center;
+  color: var(--handsome-timeline-text);
+  text-decoration: none;
+  margin-bottom: 20px;
+  transition: all 0.3s ease;
+  padding: 10px 20px;
+  border-radius: 30px;
+  background: var(--handsome-timeline-secondary);
+}
+
+.handsome-timeline-back:hover {
+  color: var(--handsome-timeline-primary);
+  transform: translateX(-5px);
+}
+
+.handsome-timeline-back svg {
+  width: 20px;
+  height: 20px;
+  margin-right: 8px;
+}
+
+.handsome-timeline-type-title {
+  font-size: 2.5rem;
+  color: var(--handsome-timeline-text);
+  margin: 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.handsome-timeline-content {
+  position: relative;
+  padding: 40px 0;
+}
+
+.handsome-timeline-content::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 2px;
+  height: 100%;
+  background: var(--handsome-timeline-border);
+  transform: translateX(-50%);
+}
+
+.handsome-timeline-item {
+  position: relative;
+  margin-bottom: 40px;
+  width: 50%;
+  padding: 0 30px;
+  box-sizing: border-box;
+}
+
+.handsome-timeline-item:nth-child(odd) {
+  margin-left: 0;
+  margin-right: auto;
+}
+
+.handsome-timeline-item:nth-child(even) {
+  margin-left: auto;
+  margin-right: 0;
+}
+
+.handsome-timeline-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 20px;
+  height: 20px;
+  background: var(--handsome-timeline-primary);
+  border-radius: 50%;
+  transform: translateX(-50%);
+  box-shadow: 0 0 0 4px var(--handsome-timeline-bg);
+}
+
+.handsome-timeline-item-content {
+  background: var(--handsome-timeline-bg);
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.handsome-timeline-item-content:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+}
+
+.handsome-timeline-title {
+  margin: 0 0 15px;
+  color: var(--handsome-timeline-text);
+  font-size: 1.4rem;
+}
+
+.handsome-timeline-description {
+  margin: 0 0 15px;
+  color: var(--handsome-timeline-text);
+  opacity: 0.8;
+  line-height: 1.6;
+}
+
+.handsome-timeline-timestamp {
+  display: block;
+  color: var(--handsome-timeline-primary);
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .handsome-timeline-categories {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .handsome-timeline-item {
+    width: 100%;
+    padding: 0 0 0 30px;
+  }
+
+  .handsome-timeline-item::before {
+    left: 0;
+  }
+
+  .handsome-timeline-content::before {
+    left: 0;
+  }
+
+  .handsome-timeline-main-title,
+  .handsome-timeline-type-title {
+    font-size: 2rem;
+  }
+}
+
+/* 黑暗模式切换按钮样式 */
+.handsome-timeline-switch {
+    font-size: 17px;
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    display: inline-block;
+    width: 64px;
+    height: 34px;
+    z-index: 1000;
+}
+
+.handsome-timeline-input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.handsome-timeline-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #73C0FC;
+    transition: .4s;
+    border-radius: 30px;
+}
+
+.handsome-timeline-slider:before {
+    position: absolute;
+    content: "";
+    height: 30px;
+    width: 30px;
+    border-radius: 20px;
+    left: 2px;
+    bottom: 2px;
+    z-index: 2;
+    background-color: #e8e8e8;
+    transition: .4s;
+}
+
+.handsome-timeline-sun svg {
+    position: absolute;
+    top: 6px;
+    left: 36px;
+    z-index: 1;
+    width: 24px;
+    height: 24px;
+}
+
+.handsome-timeline-moon svg {
+    fill: #73C0FC;
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    z-index: 1;
+    width: 24px;
+    height: 24px;
+}
+
+.handsome-timeline-sun svg {
+    animation: handsome-timeline-rotate 15s linear infinite;
+}
+
+@keyframes handsome-timeline-rotate {
+    0% {
+        transform: rotate(0);
     }
-    
-    .handsome-timeline-item-content {
-        padding: 10px;
+    100% {
+        transform: rotate(360deg);
     }
+}
+
+.handsome-timeline-moon svg {
+    animation: handsome-timeline-tilt 5s linear infinite;
+}
+
+@keyframes handsome-timeline-tilt {
+    0% {
+        transform: rotate(0deg);
+    }
+    25% {
+        transform: rotate(-10deg);
+    }
+    75% {
+        transform: rotate(10deg);
+    }
+    100% {
+        transform: rotate(0deg);
+    }
+}
+
+.handsome-timeline-input:checked + .handsome-timeline-slider {
+    background-color: #183153;
+}
+
+.handsome-timeline-input:focus + .handsome-timeline-slider {
+    box-shadow: 0 0 1px #183153;
+}
+
+.handsome-timeline-input:checked + .handsome-timeline-slider:before {
+    transform: translateX(30px);
+}
+
+[data-theme="dark"] .handsome-timeline-back {
+    background: var(--handsome-timeline-secondary);
+    color: var(--handsome-timeline-text);
+}
+
+[data-theme="dark"] .handsome-timeline-item-content {
+    background: rgba(var(--handsome-timeline-bg-rgb, 26, 26, 26), 0.8);
+    border: 1px solid rgba(var(--handsome-timeline-border-rgb, 64, 64, 64), 0.4);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="dark"] .handsome-timeline-item::before {
+    box-shadow: 0 0 0 4px rgba(var(--handsome-timeline-bg-rgb, 26, 26, 26), 1);
+}
+
+/* Ensure body/html background changes FORCEFULLY in dark mode */
+body[data-theme="dark"] {
+    background-color: var(--handsome-timeline-bg) !important; /* Force background */
+    color: var(--handsome-timeline-text) !important; /* Force text color */
+}
+
+/* Globally remove backdrop-filter by default */
+* {
+    backdrop-filter: none !important;
+}
+
+.handsome-timeline-container * {
+    /* ... keep existing resets ... */
+    backdrop-filter: none !important; /* Ensure reset inside container too */
+}
+
+/* Re-apply backdrop-filter ONLY to category cards */
+.handsome-timeline-category-card {
+    /* ... existing styles ... */
+    backdrop-filter: blur(10px); /* Re-apply with !important */
+    /* ... existing styles ... */
+}
+
+/* Explicitly set text colors in dark mode for key elements */
+[data-theme="dark"] .handsome-timeline-main-title,
+[data-theme="dark"] .handsome-timeline-category-title,
+[data-theme="dark"] .handsome-timeline-category-description,
+[data-theme="dark"] .handsome-timeline-type-title,
+[data-theme="dark"] .handsome-timeline-back,
+[data-theme="dark"] .handsome-timeline-title,
+[data-theme="dark"] .handsome-timeline-description {
+    color: var(--handsome-timeline-text) !important; /* Force text color */
+}
+
+/* Ensure timestamp and back button icon use appropriate colors too */
+[data-theme="dark"] .handsome-timeline-timestamp {
+    color: var(--handsome-timeline-primary) !important;
+}
+
+[data-theme="dark"] .handsome-timeline-back svg {
+    stroke: var(--handsome-timeline-text) !important; /* Assuming icon uses stroke */
+    fill: var(--handsome-timeline-text) !important;   /* Or fill, depending on SVG */
+}
+
+[data-theme="dark"] .handsome-timeline-category-icon {
+     color: var(--handsome-timeline-primary) !important;
+}
+
+/* Re-add video background styles */
+.handsome-timeline-video-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1; /* Ensure it's behind content */
+    overflow: hidden;
+}
+
+.handsome-timeline-video-bg video {
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0.15; /* Increase opacity slightly */
 } 
