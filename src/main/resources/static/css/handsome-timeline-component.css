@@ -1,104 +1,91 @@
-/* 基础容器样式 */
-.handsome-timeline-component {
+/* 时间轴容器 */
+.handsome-timeline-list {
     position: relative;
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
-    color: var(--handsome-timeline-text-color, #333);
-    background: var(--handsome-timeline-bg-color, rgba(255, 255, 255, 0.9));
-    border-radius: 8px;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
 }
 
-/* 暗色模式支持 */
-.handsome-timeline-component[data-theme="dark"] {
-    --handsome-timeline-text-color: #e0e0e0;
-    --handsome-timeline-bg-color: rgba(30, 30, 30, 0.9);
-    --handsome-timeline-border-color: #444;
-    --handsome-timeline-hover-color: #666;
-}
-
-/* 时间线项目样式 */
-.handsome-timeline-component .timeline-item {
+/* 时间轴项目 */
+.handsome-timeline-list-item {
     position: relative;
-    padding: 20px;
+    padding: 20px 0 20px 30px;
+    border-left: 2px solid var(--timeline-border-color, #e0e0e0);
     margin-bottom: 20px;
-    border-left: 2px solid var(--handsome-timeline-border-color, #e0e0e0);
     transition: all 0.3s ease;
 }
 
-.handsome-timeline-component .timeline-item::before {
+.handsome-timeline-list-item::before {
     content: '';
     position: absolute;
     left: -6px;
-    top: 24px;
+    top: 28px;
     width: 10px;
     height: 10px;
     border-radius: 50%;
-    background: var(--handsome-timeline-accent-color, #1890ff);
-    border: 2px solid var(--handsome-timeline-bg-color, #fff);
+    background: var(--timeline-dot-color, #1890ff);
+    border: 2px solid var(--timeline-dot-border-color, #fff);
+    transition: all 0.3s ease;
 }
 
-.handsome-timeline-component .timeline-item:hover {
-    border-left-color: var(--handsome-timeline-accent-color, #1890ff);
-    background: var(--handsome-timeline-hover-color, rgba(24, 144, 255, 0.1));
+.handsome-timeline-list-item:hover::before {
+    transform: scale(1.2);
+    background: var(--timeline-dot-hover-color, #40a9ff);
 }
 
-/* 时间线内容样式 */
-.handsome-timeline-component .timeline-title {
+/* 时间轴内容 */
+.handsome-timeline-list-title {
     font-size: 18px;
     font-weight: 500;
+    color: var(--timeline-title-color, #262626);
     margin-bottom: 8px;
-    color: var(--handsome-timeline-text-color, #262626);
+    line-height: 1.4;
 }
 
-.handsome-timeline-component .timeline-description {
+.handsome-timeline-list-desc {
     font-size: 14px;
-    line-height: 1.6;
+    color: var(--timeline-desc-color, #595959);
     margin-bottom: 8px;
-    color: var(--handsome-timeline-text-color, #595959);
+    line-height: 1.6;
 }
 
-.handsome-timeline-component .timeline-timestamp {
+.handsome-timeline-list-time {
     font-size: 12px;
-    color: var(--handsome-timeline-text-color, #8c8c8c);
+    color: var(--timeline-time-color, #8c8c8c);
 }
 
-/* 加载状态 */
-.handsome-timeline-component .timeline-loading {
-    text-align: center;
-    padding: 20px;
-    color: var(--handsome-timeline-text-color, #8c8c8c);
+/* 暗色模式 */
+[data-theme="dark"] .handsome-timeline-list {
+    --timeline-border-color: #333;
+    --timeline-dot-color: #177ddc;
+    --timeline-dot-border-color: #1f1f1f;
+    --timeline-dot-hover-color: #40a9ff;
+    --timeline-title-color: #e0e0e0;
+    --timeline-desc-color: #a0a0a0;
+    --timeline-time-color: #808080;
 }
 
-/* 错误状态 */
-.handsome-timeline-component .timeline-error {
-    text-align: center;
-    padding: 20px;
-    color: #ff4d4f;
+/* 动画效果 */
+.handsome-timeline-list-item {
+    opacity: 0;
+    transform: translateX(-20px);
+    animation: timeline-slide-in 0.3s ease forwards;
+}
+
+@keyframes timeline-slide-in {
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
 }
 
 /* 响应式设计 */
 @media screen and (max-width: 768px) {
-    .handsome-timeline-component {
-        padding: 15px;
+    .handsome-timeline-list {
+        padding: 10px;
     }
-
-    .handsome-timeline-component .timeline-item {
-        padding: 15px;
-    }
-}
-
-/* 动画效果 */
-.handsome-timeline-component .timeline-item {
-    opacity: 0;
-    transform: translateX(-20px);
-    animation: slideIn 0.3s ease forwards;
-}
-
-@keyframes slideIn {
-    to {
-        opacity: 1;
-        transform: translateX(0);
+    
+    .handsome-timeline-list-item {
+        padding-left: 20px;
     }
 } 
