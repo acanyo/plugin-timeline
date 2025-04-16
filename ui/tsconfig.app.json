@@ -7,8 +7,12 @@
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@halo-dev/richtext-editor": ["./node_modules/@halo-dev/richtext-editor/dist/index.d.ts"]
     },
-    "types": ["unplugin-icons/types/vue"]
+    "types": ["unplugin-icons/types/vue", "@tiptap/core", "@tiptap/vue-3", "@halo-dev/richtext-editor"],
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true
   }
 }

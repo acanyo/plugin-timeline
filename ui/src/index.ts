@@ -2,9 +2,17 @@ import {definePlugin} from "@halo-dev/console-shared";
 import TimelineView from "./views/Timeline.vue";
 import {markRaw} from "vue";
 import IconParkTimeline from '~icons/icons8/timeline';
+import { Timeline } from "./timeline/TimelineExtension";
 
 export default definePlugin({
   components: {},
+  extensionPoints: {
+    "default:editor:extension:create": () => {
+      return [
+        Timeline,
+      ];
+    },
+  },
   routes: [
     {
       parentName: "ToolsRoot",
@@ -37,6 +45,5 @@ export default definePlugin({
       },
     },
   ],
-  extensionPoints: {},
 });
 
