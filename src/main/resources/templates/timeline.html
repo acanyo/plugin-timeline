@@ -3,13 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="${type != null ? type.label + ' - 时间线' : '时间线分类'}">时间线</title>
+    <title th:text="${type != null ? type.label + ' - ' + (settings?.title ?: '时间线') : (settings?.title ?: '时间线分类')}">时间线</title>
 </head>
-<body>
-    <!-- Add back the video background element -->
-    <div class="handsome-timeline-video-bg">
-        <video width="320" height="240" autoplay loop muted playsinline> <!-- Add playsinline for mobile compatibility -->
-            <source src="https://assets.codepen.io/3364143/7btrrd.mp4" type="video/mp4">
+<body id="handsome-timeline-body"
+      th:style="${settings.bgImages != null and !(settings.bgImages.endsWith('.mp4') or settings.bgImages.endsWith('.webm') or settings.bgImages.endsWith('.ogv'))} ? 
+                 '--handsome-timeline-bg-image: url(' + @{${settings.bgImages}} + '); --handsome-timeline-bg-opacity: ' + (${settings.opacity_val} ?: 1) + ';' 
+                 : ''" 
+>
+    <!-- Conditional Video Background -->
+    <div th:if="${settings.bgImages != null and (settings.bgImages.endsWith('.mp4') or settings.bgImages.endsWith('.webm') or settings.bgImages.endsWith('.ogv'))}" 
+         class="handsome-timeline-video-bg">
+        <video width="320" height="240" autoplay loop muted playsinline 
+               th:styleappend="${'opacity: ' + (settings.opacity_val ?: 0.15) + ' !important;'}">
+            <source th:src="${settings.bgImages}" th:type="${#strings.endsWith(settings.bgImages, '.webm') ? 'video/webm' : (#strings.endsWith(settings.bgImages, '.ogv') ? 'video/ogg' : 'video/mp4')}">
             Your browser does not support the video tag.
         </video>
     </div>
@@ -32,10 +38,12 @@
         <span class="handsome-timeline-slider"></span>
     </label>
 
+    <!-- Container is now transparent, content sits above body::before -->
     <div class="handsome-timeline-container">
         <!-- 分类页面 -->
         <div th:if="${type == null}" class="handsome-timeline-categories-page">
-            <h1 class="handsome-timeline-main-title">时间线分类</h1>
+            <h1 class="handsome-timeline-main-title" 
+                th:text="${settings?.title != null and !#strings.isEmpty(settings.title) ? settings.title + '分类' : '时间线分类'}">时间线分类</h1>
             <div class="handsome-timeline-categories">
                 <div th:each="type : ${timelineTypes}" class="handsome-timeline-category-card">
                     <a th:href="@{'/timelines/' + ${type.value}}" class="handsome-timeline-category-link">

@@ -48,7 +48,9 @@ public class TimelineServiceImpl implements TimelineService {
             .switchIfEmpty(Mono.error(new RuntimeException("配置不存在")))
             .flatMap(item -> {
                 BaseConfig config = new BaseConfig(
-                    item.path("title").asText("时间轴")
+                    item.path("title").asText("时间轴"),
+                    item.path("bgImages").asText("https://assets.codepen.io/3364143/7btrrd.mp4"),
+                    item.path("opacity_val").asText("0.5")
                 );
                 return Mono.just(config);
             });

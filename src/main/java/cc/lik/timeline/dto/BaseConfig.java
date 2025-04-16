@@ -9,5 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class BaseConfig {
     private String title;
+    private String bgImages;
+    private String opacity_val;
 }
 
