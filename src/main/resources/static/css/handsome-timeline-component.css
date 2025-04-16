@@ -5,6 +5,11 @@
     margin: 0 auto;
     padding: 20px;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --primary-color: #3b82f6;
+    --text-primary: #1a1a1a;
+    --text-secondary: #374151;
+    --text-tertiary: #4b5563;
+    --bg-highlight: rgba(59, 130, 246, 0.08);
 }
 
 /* 时间轴项目 */
@@ -25,14 +30,14 @@
     height: 10px;
     border-radius: 50%;
     background: var(--timeline-dot-color, #fff);
-    border: 2px solid var(--timeline-dot-border-color, #3b82f6);
+    border: 2px solid var(--primary-color);
     transition: all 0.3s ease;
     z-index: 1;
 }
 
 .handsome-timeline-list-item:hover::before {
     transform: scale(1.2);
-    background: var(--timeline-dot-border-color, #3b82f6);
+    background: var(--primary-color);
     box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
 }
 
@@ -40,7 +45,6 @@
 .handsome-timeline-list-content {
     background: transparent;
     padding: 0;
-    box-shadow: none;
     transition: all 0.3s ease;
 }
 
@@ -50,25 +54,26 @@
 
 .handsome-timeline-list-time {
     font-size: 14px;
-    color: var(--timeline-time-color, #6b7280);
+    color: var(--text-tertiary);
     margin-bottom: 10px;
     display: flex;
     align-items: center;
     letter-spacing: 0.3px;
+    font-weight: 500;
 }
 
 .handsome-timeline-list-time svg {
     width: 16px;
     height: 16px;
     margin-right: 6px;
-    color: var(--timeline-dot-border-color, #3b82f6);
+    color: var(--primary-color);
     opacity: 0.8;
 }
 
 .handsome-timeline-list-title {
     font-size: 17px;
-    font-weight: 500;
-    color: var(--timeline-title-color, #1f2937);
+    font-weight: 600;
+    color: var(--text-primary);
     margin-bottom: 10px;
     line-height: 1.4;
     letter-spacing: 0.2px;
@@ -76,19 +81,20 @@
     display: flex;
     align-items: center;
     gap: 8px;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
 }
 
 .handsome-timeline-list-title svg {
     width: 18px;
     height: 18px;
-    color: var(--timeline-dot-border-color, #3b82f6);
+    color: var(--primary-color);
     opacity: 0;
     transform: translateX(-10px);
     transition: all 0.3s ease;
 }
 
 .handsome-timeline-list-item:hover .handsome-timeline-list-title {
-    color: var(--timeline-dot-border-color, #3b82f6);
+    color: var(--primary-color);
 }
 
 .handsome-timeline-list-item:hover .handsome-timeline-list-title svg {
@@ -98,23 +104,28 @@
 
 .handsome-timeline-list-desc {
     font-size: 15px;
-    color: var(--timeline-desc-color, #4b5563);
+    color: var(--text-secondary);
     margin-bottom: 12px;
     line-height: 1.6;
     letter-spacing: 0.2px;
     position: relative;
     padding-left: 24px;
+    background: var(--bg-highlight);
+    padding: 12px 16px;
+    border-radius: 6px;
+    font-weight: 400;
 }
 
 .handsome-timeline-list-desc::before {
     content: '';
     position: absolute;
     left: 0;
-    top: 0.7em;
-    width: 16px;
-    height: 2px;
-    background: var(--timeline-dot-border-color, #3b82f6);
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: var(--primary-color);
     opacity: 0.3;
+    border-radius: 4px 0 0 4px;
 }
 
 .handsome-timeline-list-meta {
@@ -130,10 +141,11 @@
     padding: 4px 12px;
     border-radius: 20px;
     font-size: 13px;
-    background: var(--timeline-tag-bg, rgba(59, 130, 246, 0.1));
-    color: var(--timeline-dot-border-color, #3b82f6);
+    background: var(--bg-highlight);
+    color: var(--primary-color);
     transition: all 0.3s ease;
     gap: 4px;
+    font-weight: 500;
 }
 
 .handsome-timeline-list-category svg {
@@ -142,7 +154,7 @@
 }
 
 .handsome-timeline-list-category:hover {
-    background: var(--timeline-dot-border-color, #3b82f6);
+    background: var(--primary-color);
     color: #fff;
     transform: translateY(-1px);
 }
@@ -155,15 +167,16 @@
 }
 
 .handsome-timeline-list-tag {
-    padding: 2px 8px;
+    padding: 3px 10px;
     border-radius: 4px;
     font-size: 12px;
-    background: var(--timeline-tag-light-bg, rgba(0, 0, 0, 0.05));
-    color: var(--timeline-tag-light-color, #4b5563);
+    background: var(--timeline-tag-light-bg, rgba(0, 0, 0, 0.04));
+    color: var(--text-secondary);
     transition: all 0.3s ease;
     display: inline-flex;
     align-items: center;
     gap: 4px;
+    font-weight: 500;
 }
 
 .handsome-timeline-list-tag svg {
@@ -174,6 +187,7 @@
 .handsome-timeline-list-tag:hover {
     background: var(--timeline-tag-light-bg-hover, rgba(0, 0, 0, 0.08));
     transform: translateY(-1px);
+    color: var(--text-primary);
 }
 
 .handsome-timeline-list-image {
@@ -211,7 +225,7 @@
 .handsome-timeline-list-article {
     display: inline-flex;
     align-items: center;
-    color: var(--timeline-dot-border-color, #3b82f6);
+    color: var(--primary-color);
     font-size: 14px;
     text-decoration: none;
     margin-top: 12px;
@@ -219,11 +233,12 @@
     gap: 6px;
     padding: 6px 12px;
     border-radius: 6px;
-    background: var(--timeline-tag-bg, rgba(59, 130, 246, 0.1));
+    background: var(--bg-highlight);
+    font-weight: 500;
 }
 
 .handsome-timeline-list-article:hover {
-    background: var(--timeline-dot-border-color, #3b82f6);
+    background: var(--primary-color);
     color: #fff;
     transform: translateY(-1px);
 }
@@ -240,27 +255,23 @@
 
 /* 置顶项样式 */
 .handsome-timeline-list-item[data-pinned="true"] {
-    background: var(--timeline-pinned-bg, rgba(59, 130, 246, 0.02));
+    background: var(--bg-highlight);
 }
 
 .handsome-timeline-list-item[data-pinned="true"]::before {
-    background: var(--timeline-dot-border-color, #3b82f6);
-    border-color: var(--timeline-dot-border-color, #3b82f6);
+    background: var(--primary-color);
+    border-color: var(--primary-color);
 }
 
 /* 暗色模式 */
 [data-theme="dark"] .handsome-timeline-list {
     --timeline-border-color: rgba(75, 85, 99, 0.3);
     --timeline-dot-color: #1f2937;
-    --timeline-dot-border-color: #60a5fa;
-    --timeline-title-color: #f3f4f6;
-    --timeline-desc-color: #9ca3af;
-    --timeline-time-color: #6b7280;
-    --timeline-tag-bg: rgba(59, 130, 246, 0.15);
-    --timeline-tag-light-bg: rgba(255, 255, 255, 0.08);
-    --timeline-tag-light-bg-hover: rgba(255, 255, 255, 0.12);
-    --timeline-tag-light-color: #9ca3af;
-    --timeline-pinned-bg: rgba(59, 130, 246, 0.1);
+    --primary-color: #60a5fa;
+    --text-primary: #f3f4f6;
+    --text-secondary: #e5e7eb;
+    --text-tertiary: #9ca3af;
+    --bg-highlight: rgba(96, 165, 250, 0.1);
 }
 
 /* 动画效果 */
@@ -294,7 +305,7 @@
 
     .handsome-timeline-list-desc {
         font-size: 14px;
-        padding-left: 20px;
+        padding: 10px 14px;
     }
 
     .handsome-timeline-list-image img {
@@ -308,12 +319,13 @@
 .handsome-timeline-list-error {
     text-align: center;
     padding: 40px 0;
-    color: var(--timeline-time-color, #6b7280);
+    color: var(--text-tertiary);
     font-size: 14px;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 12px;
+    font-weight: 500;
 }
 
 .handsome-timeline-list-empty svg,
@@ -321,6 +333,6 @@
 .handsome-timeline-list-error svg {
     width: 40px;
     height: 40px;
-    color: var(--timeline-dot-border-color, #3b82f6);
+    color: var(--primary-color);
     opacity: 0.5;
 } 
