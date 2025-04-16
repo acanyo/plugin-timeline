@@ -28,7 +28,7 @@ public class PinyinUtil {
         
         StringBuilder result = new StringBuilder();
         HanyuPinyinOutputFormat format = new HanyuPinyinOutputFormat();
-        format.setCaseType(HanyuPinyinCaseType.UPPERCASE);
+        format.setCaseType(HanyuPinyinCaseType.LOWERCASE);
         format.setToneType(HanyuPinyinToneType.WITHOUT_TONE);
         
         for (int i = 0; i < chinese.length(); i++) {
