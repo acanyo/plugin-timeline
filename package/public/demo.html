@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lit Timeline 使用示例</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 20px;
+      background: #f5f5f5;
+    }
+    h1 { 
+      color: #1a1a1a; 
+      margin-bottom: 10px;
+      font-size: 28px;
+      font-weight: 700;
+      text-align: center;
+    }
+    .subtitle {
+      text-align: center;
+      color: #666;
+      margin-bottom: 40px;
+      font-size: 14px;
+    }
+    h2 { 
+      color: #333; 
+      margin-top: 50px; 
+      margin-bottom: 20px;
+      font-size: 20px;
+      font-weight: 600;
+    }
+    .demo-section {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      margin-bottom: 30px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    .dark-section {
+      background: #1f2937;
+      color: #f9fafb;
+    }
+    .dark-section h2 { 
+      color: #f9fafb; 
+    }
+  </style>
+  <script type="module" src="../dist/timeline.es.js"></script>
+</head>
+<body>
+  <h1>📅 Lit Timeline 时间轴组件</h1>
+  <p class="subtitle">简洁的蓝白配色时间轴组件，使用 Shadow DOM 确保样式完全隔离</p>
+
+  <div class="demo-section">
+    <h2>垂直时间轴（带标题）</h2>
+    <lit-timeline id="timeline1" title="项目开发时间线" theme="light" orientation="vertical"></lit-timeline>
+  </div>
+
+  <div class="demo-section dark-section">
+    <h2>暗色主题（带标题）</h2>
+    <lit-timeline id="timeline2" title="年度计划" theme="dark" orientation="vertical"></lit-timeline>
+  </div>
+
+  <div class="demo-section">
+    <h2>水平时间轴</h2>
+    <lit-timeline id="timeline3" theme="light" orientation="horizontal"></lit-timeline>
+  </div>
+
+  <script type="module">
+    await customElements.whenDefined('lit-timeline');
+    
+    const timeline1 = document.getElementById('timeline1');
+    timeline1.items = [
+      { 
+        date: '2024-01-15', 
+        title: '项目启动', 
+        description: '项目正式启动，团队开始规划开发路线图，确定技术栈和开发计划',
+        image: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&h=400&fit=crop'
+      },
+      { 
+        date: '2024-02-20', 
+        title: '核心功能开发', 
+        description: '完成核心功能的开发和测试，确保系统稳定性和性能优化',
+        image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=400&fit=crop'
+      },
+      { 
+        date: '2024-03-10', 
+        title: 'UI/UX 优化', 
+        description: '优化用户界面和用户体验，提升产品易用性和视觉美感' 
+      },
+      { 
+        date: '2024-04-01', 
+        title: '产品发布', 
+        description: '产品正式发布，开始面向用户提供服务，建立用户支持体系',
+        image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&h=400&fit=crop'
+      }
+    ];
+
+    const timeline2 = document.getElementById('timeline2');
+    timeline2.items = [
+      { 
+        date: '2024-01-01', 
+        title: '新年计划', 
+        description: '制定新一年的发展计划和目标，明确发展方向和重点任务'
+      },
+      { 
+        date: '2024-06-01', 
+        title: '年中总结', 
+        description: '回顾上半年工作，总结经验教训，调整下半年策略' 
+      },
+      { 
+        date: '2024-12-31', 
+        title: '年终总结', 
+        description: '总结全年工作成果，规划来年发展，制定新的目标' 
+      }
+    ];
+
+    const timeline3 = document.getElementById('timeline3');
+    timeline3.items = [
+      { 
+        date: 'Q1', 
+        title: '第一季度', 
+        description: '产品规划与设计阶段'
+      },
+      { 
+        date: 'Q2', 
+        title: '第二季度', 
+        description: '核心功能开发阶段' 
+      },
+      { 
+        date: 'Q3', 
+        title: '第三季度', 
+        description: '测试与优化阶段' 
+      },
+      { 
+        date: 'Q4', 
+        title: '第四季度', 
+        description: '产品发布与运营阶段' 
+      }
+    ];
+  </script>
+</body>
+</html>
+
