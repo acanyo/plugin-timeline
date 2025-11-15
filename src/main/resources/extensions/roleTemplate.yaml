@@ -1,0 +1,30 @@
+apiVersion: v1alpha1
+kind: Role
+metadata:
+  name: role-template-timeline-view
+  labels:
+    halo.run/role-template: "true"
+  annotations:
+    rbac.authorization.halo.run/module: "时间轴"
+    rbac.authorization.halo.run/ui-permissions: '["plugin:timeline:view"]'
+    rbac.authorization.halo.run/display-name: "时间轴查看"
+rules:
+  - apiGroups: [ "core.halo.run", "api.timeline.xhhao.com", "timeline.xhhao.com"]
+    resources: [ "timelines", "timelinegroups" ]
+    verbs: [ "get", "list" ]
+---
+apiVersion: v1alpha1
+kind: Role
+metadata:
+  name: role-template-timeline-manage
+  labels:
+    halo.run/role-template: "true"
+  annotations:
+    rbac.authorization.halo.run/dependencies: '["role-template-timeline-view"]'
+    rbac.authorization.halo.run/ui-permissions: '["plugin:timeline:manage"]'
+    rbac.authorization.halo.run/module: "时间轴"
+    rbac.authorization.halo.run/display-name: "时间轴管理"
+rules:
+  - apiGroups: [ "core.halo.run", "api.timeline.xhhao.com", "timeline.xhhao.com"]
+    resources: [ "timelines", "timelinegroups" ]
+    verbs: [ "create", "patch", "update", "delete", "deletecollection" ]

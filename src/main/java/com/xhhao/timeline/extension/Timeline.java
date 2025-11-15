@@ -2,6 +2,7 @@ package com.xhhao.timeline.extension;
 
 import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -9,6 +10,7 @@ import lombok.ToString;
 import run.halo.app.core.extension.attachment.Constant;
 import run.halo.app.extension.AbstractExtension;
 import run.halo.app.extension.GVK;
+import java.util.Objects;
 
 
 @Data
@@ -26,8 +28,8 @@ public class Timeline extends AbstractExtension {
     @Data
     public static class Spec {
 
-        @Schema(requiredMode = REQUIRED, description = "标题", example = "项目启动")
-        private String title;
+        @Schema(requiredMode = REQUIRED, description = "所属分组名称", example = "project-dev")
+        private String groupName;
 
         @Schema(description = "日期，格式：YYYY-MM-DD", example = "2024-01-15")
         private String date;
@@ -43,5 +45,11 @@ public class Timeline extends AbstractExtension {
 
         @Schema(description = "关联的文章名称（可选），用于关联 Halo 文章")
         private String postName;
+    }
+    @JsonIgnore
+    public boolean isDeleted() {
+        return Objects.equals(true,
+            getMetadata().getDeletionTimestamp() != null
+        );
     }
 }

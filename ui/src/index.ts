@@ -1,29 +1,29 @@
-import { definePlugin } from '@halo-dev/console-shared'
-import HomeView from './views/HomeView.vue'
-import { IconPlug } from '@halo-dev/components'
-import { markRaw } from 'vue'
+import { definePlugin } from "@halo-dev/console-shared";
+import { defineAsyncComponent, markRaw } from "vue";
+import TablerClock from '~icons/tabler/clock'
+import "uno.css";
+import { VLoading } from "@halo-dev/components";
 
 export default definePlugin({
-  components: {},
   routes: [
     {
-      parentName: 'Root',
+      parentName: "Root",
       route: {
-        path: '/example',
-        name: 'Example',
-        component: HomeView,
+        path: "/timeline",
+        name: "Timeline",
+        component: defineAsyncComponent({
+          loader: () => import("@/views/TimelineList.vue"),
+          loadingComponent: VLoading,
+        }),
         meta: {
-          title: '示例页面',
-          searchable: true,
+          permissions: ["plugin:timeline:view"],
           menu: {
-            name: '示例页面',
-            group: '示例分组',
-            icon: markRaw(IconPlug),
-            priority: 0,
+            name: "时间轴",
+            group: "content",
+            icon: markRaw(TablerClock),
           },
         },
       },
     },
   ],
-  extensionPoints: {},
-})
+});
