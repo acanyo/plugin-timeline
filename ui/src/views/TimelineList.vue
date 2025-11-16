@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import LazyImage from "@/components/LazyImage.vue";
+import TimelineListItem from "@/components/TimelineListItem.vue";
 import TimelineEditingModal from "@/components/TimelinEditingModal.vue";
 import type { Timeline, TimelineList } from "@/types";
 import { axiosInstance } from "@halo-dev/api-client";
@@ -8,7 +8,7 @@ import {
     IconAddCircle,
     IconArrowLeft,
     IconArrowRight,
-    IconCheckboxFill,
+    IconRefreshLine,
     Toast,
     VButton,
     VCard,
@@ -24,16 +24,15 @@ import type { AttachmentLike } from "@halo-dev/console-shared";
 import { useQuery } from "@tanstack/vue-query";
 import Fuse from "fuse.js";
 import { computed, nextTick, ref, watch } from "vue";
-import TablerClock from '~icons/tabler/clock'
+import TablerClock from "~icons/tabler/clock";
 import GroupList from "../components/GroupList.vue";
-import {VueDraggable} from "vue-draggable-plus";
 
 const removeFileExtension = (filename: string) => {
     return filename.replace(/\.[^/.]+$/, "");
 };
 
 const selectedTimeline = ref<Timeline | undefined>();
-const selectedTimelines = ref<Set<Timeline>>(new Set<Timeline>());
+const selectedTimelineNames = ref<string[]>([]);
 const selectedGroup = ref<string>();
 const editingModal = ref(false);
 const checkedAll = ref(false);
@@ -46,7 +45,9 @@ const keyword = ref("");
 const timelines = ref<Timeline[]>([]);
 
 const {
+    data: timelinesData,
     isLoading,
+    isFetching,
     refetch,
 } = useQuery<Timeline[]>({
     queryKey: ["plugin:timeline:timelines", page, size, keyword, selectedGroup],
@@ -75,6 +76,7 @@ const {
     onSuccess(data) {
         timelines.value = data;
     },
+    keepPreviousData: true,
     refetchOnWindowFocus: false,
 });
 
@@ -122,10 +124,12 @@ const handleDeleteInBatch = () => {
         confirmType: "danger",
         onConfirm: async () => {
             try {
-                const promises = Array.from(selectedTimelines.value).map((timeline) => {
-                    return axiosInstance.delete(`/apis/api.timeline.xhhao.com/v1alpha1/timelines/${timeline.metadata.name}`);
+                const promises = selectedTimelineNames.value.map((name) => {
+                    return axiosInstance.delete(`/apis/timeline.xhhao.com/v1alpha1/timelines/${name}`);
                 });
                 await Promise.all(promises);
+                selectedTimelineNames.value = [];
+                Toast.success("删除成功");
             } catch (e) {
                 console.error(e);
             } finally {
@@ -137,33 +141,23 @@ const handleDeleteInBatch = () => {
 
 const handleCheckAllChange = (e: Event) => {
     const { checked } = (e.target as HTMLInputElement);
-    handleCheckAll(checked);
-};
-
-const handleCheckAll = (checkAll: boolean) => {
-    if (checkAll) {
-        timelines.value?.forEach((timeline) => {
-            selectedTimelines.value.add(timeline);
-        });
+    if (checked) {
+        selectedTimelineNames.value =
+            searchResults.value?.map((timeline) => timeline.metadata.name) || [];
     } else {
-        selectedTimelines.value.clear();
+        selectedTimelineNames.value = [];
     }
 };
 
-const isChecked = (timeline: Timeline) => {
-    return (
-            timeline.metadata.name === selectedTimeline.value?.metadata.name ||
-            Array.from(selectedTimelines.value)
-                    .map((item) => item.metadata.name)
-                    .includes(timeline.metadata.name)
-    );
+const checkSelection = (timeline: Timeline) => {
+    return selectedTimelineNames.value.includes(timeline.metadata.name);
 };
 
 watch(
-        () => selectedTimelines.value.size,
-        (newValue) => {
-            checkedAll.value = newValue === timelines.value?.length;
-        }
+    () => selectedTimelineNames.value,
+    (newValue) => {
+        checkedAll.value = newValue.length === searchResults.value?.length;
+    }
 );
 
 // search
@@ -177,7 +171,7 @@ watch(
             }
 
             fuse = new Fuse(timelines.value, {
-                keys: ["spec.description", "metadata.name", "spec.date"],
+                keys: ["spec.displayName", "metadata.name", "spec.date"],
                 useExtendedSearch: true,
             });
         }
@@ -203,13 +197,13 @@ const onAttachmentsSelect = async (attachments: AttachmentLike[]) => {
     const newTimelines: {
         groupName: string;
         image?: string;
-        description?: string;
+        displayName?: string;
     }[] = attachments
             .map((attachment) => {
                 const timeline: {
                     groupName: string;
                     image?: string;
-                    description?: string;
+                    displayName?: string;
                 } = {
                     groupName: selectedGroup.value || "",
                 };
@@ -220,7 +214,7 @@ const onAttachmentsSelect = async (attachments: AttachmentLike[]) => {
                     timeline.image = attachment.url;
                 } else if ("spec" in attachment) {
                     timeline.image = attachment.status?.permalink;
-                    timeline.description = attachment.spec.displayName ? removeFileExtension(attachment.spec.displayName) : undefined;
+                    timeline.displayName = attachment.spec.displayName ? removeFileExtension(attachment.spec.displayName) : undefined;
                 }
                 return timeline;
             })
@@ -237,7 +231,7 @@ const onAttachmentsSelect = async (attachments: AttachmentLike[]) => {
     }
 
     const createRequests = newTimelines.map((timeline) => {
-        return axiosInstance.post<Timeline>("/apis/api.timeline.xhhao.com/v1alpha1/timelines", {
+        return axiosInstance.post<Timeline>("/apis/timeline.xhhao.com/v1alpha1/timelines", {
             metadata: {
                 name: "",
                 generateName: "timeline-",
@@ -261,7 +255,7 @@ const groupSelectHandle = (group?: string) => {
 const pageRefetch = async () => {
     await groupListRef.value.refetch();
     await refetch();
-    selectedTimelines.value = new Set<Timeline>();
+    selectedTimelineNames.value = [];
 };
 
 const onEditingModalClose = () => {
@@ -299,28 +293,54 @@ const onEditingModalClose = () => {
                 <GroupList ref="groupListRef" @select="groupSelectHandle" />
             </div>
             <div class=":uno: min-w-0 flex-1 shrink">
-                <VCard>
+                <VCard :body-class="[':uno: !p-0']">
                     <template #header>
                         <div class=":uno: block w-full bg-gray-50 px-4 py-3">
-                            <div class=":uno: relative flex flex-col items-start sm:flex-row sm:items-center">
-                                <div class=":uno: mr-4 hidden items-center sm:flex">
-                                    <input v-model="checkedAll" type="checkbox" @change="handleCheckAllChange" />
+                            <div
+                                class=":uno: relative flex flex-col flex-wrap items-start gap-4 sm:flex-row sm:items-center"
+                            >
+                                <div
+                                    v-permission="['plugin:timeline:manage']"
+                                    class=":uno: hidden items-center sm:flex"
+                                >
+                                    <input
+                                        v-model="checkedAll"
+                                        type="checkbox"
+                                        @change="handleCheckAllChange"
+                                    />
                                 </div>
-                                <div class=":uno: w-full flex flex-1 sm:w-auto">
-                                    <SearchInput v-if="!selectedTimelines.size" v-model="keyword" />
+                                <div class=":uno: flex w-full flex-1 items-center sm:w-auto">
+                                    <SearchInput
+                                        v-if="!selectedTimelineNames.length"
+                                        v-model="keyword"
+                                    />
                                     <VSpace v-else>
-                                        <VButton type="danger" @click="handleDeleteInBatch"> 删除 </VButton>
+                                        <VButton type="danger" @click="handleDeleteInBatch">
+                                            删除
+                                        </VButton>
                                     </VSpace>
                                 </div>
-                                <div v-if="selectedGroup" v-permission="['plugin:timeline:manage']" class=":uno: mt-4 flex sm:mt-0">
-                                    <VDropdown>
+                                <VSpace v-if="selectedGroup" spacing="lg" class=":uno: flex-wrap">
+                                    <div class=":uno: flex flex-row gap-2">
+                                        <div
+                                            class=":uno: group cursor-pointer rounded p-1 hover:bg-gray-200"
+                                            @click="refetch()"
+                                        >
+                                            <IconRefreshLine
+                                                v-tooltip="'刷新'"
+                                                :class="{ 'animate-spin text-gray-900': isFetching }"
+                                                class=":uno: h-4 w-4 text-gray-600 group-hover:text-gray-900"
+                                            />
+                                        </div>
+                                    </div>
+                                    <VDropdown v-permission="['plugin:timeline:manage']">
                                         <VButton size="xs"> 新增 </VButton>
                                         <template #popper>
                                             <VDropdownItem @click="handleOpenEditingModal()"> 新增 </VDropdownItem>
                                             <VDropdownItem @click="attachmentModal = true"> 从附件库选择 </VDropdownItem>
                                         </template>
                                     </VDropdown>
-                                </div>
+                                </VSpace>
                             </div>
                         </div>
                     </template>
@@ -344,91 +364,40 @@ const onEditingModalClose = () => {
                         </VEmpty>
                     </Transition>
                     <Transition v-else appear name="fade">
-                        <VueDraggable
-                                v-model="timelines"
-                                class=":uno: grid grid-cols-1 mt-2 gap-x-2 gap-y-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5"
-                                group="timeline"
-                                handle=".drag-element"
-                                item-key="metadata.name"
-                                tag="div"
-                                role="list"
-                        >
-                            <VCard
-                                    v-for="timeline in timelines"
-                                    :key="timeline.metadata.name"
-                                    :body-class="[':uno: !p-0']"
-                                    :class="{
-                  ':uno: ring-primary ring-1': isChecked(timeline),
-                  ':uno: ring-1 ring-red-600': timeline.metadata.deletionTimestamp,
-                }"
-                                    class=":uno: hover:shadow drag-element "
-                                    @click="handleOpenEditingModal(timeline)"
-                            >
-                                <div class=":uno: group relative bg-white">
-                                    <div class=":uno: block aspect-16/9 size-full cursor-pointer overflow-hidden bg-gray-100 relative">
-                                        <LazyImage
-                                                v-if="timeline.spec.image"
-                                                :key="timeline.metadata.name"
-                                                :alt="timeline.spec.description || '时间轴'"
-                                                :src="timeline.spec.image"
-                                                classes="size-full pointer-events-none group-hover:opacity-75"
-                                        >
-                                            <template #loading>
-                                                <div class=":uno: h-full flex justify-center">
-                                                    <VLoading></VLoading>
-                                                </div>
-                                            </template>
-                                            <template #error>
-                                                <div class=":uno: h-full flex items-center justify-center object-cover">
-                                                    <span class=":uno: text-xs text-red-400"> 加载异常 </span>
-                                                </div>
-                                            </template>
-                                        </LazyImage>
-                                        <div v-else class=":uno: h-full flex items-center justify-center bg-gray-200">
-                                            <span class=":uno: text-xs text-gray-400">无图片</span>
-                                        </div>
-                                    </div>
-
-                                    <div class=":uno: px-2 py-1">
-                                        <p
-                                                v-if="timeline.spec.date"
-                                                class=":uno: text-xs text-gray-500"
-                                        >
-                                            {{ timeline.spec.date }}
-                                        </p>
-                                        <p
-                                                v-tooltip="timeline.spec.description"
-                                                class=":uno: block cursor-pointer truncate text-center text-xs text-gray-700 font-medium"
-                                        >
-                                            {{ timeline.spec.description || '无描述' }}
-                                        </p>
-                                    </div>
-
-                                    <div v-if="timeline.metadata.deletionTimestamp" class=":uno: absolute top-1 right-1 text-xs text-red-300">
-                                        删除中...
-                                    </div>
-
-                                    <div
-                                            v-if="!timeline.metadata.deletionTimestamp"
-                                            v-permission="['plugin:timeline:manage']"
-                                            :class="{ ':uno: !flex': selectedTimelines.has(timeline) }"
-                                            class=":uno: absolute left-0 top-0 hidden h-1/3 w-full cursor-pointer justify-end from-gray-300 to-transparent bg-gradient-to-b ease-in-out group-hover:flex"
-                                            @click.stop="selectedTimelines.has(timeline) ? selectedTimelines.delete(timeline) : selectedTimelines.add(timeline)"
+                        <div class=":uno: w-full overflow-x-auto">
+                            <table class=":uno: w-full border-spacing-0">
+                                <tbody class=":uno: divide-y divide-gray-100">
+                                    <TimelineListItem
+                                        v-for="timeline in searchResults"
+                                        :key="timeline.metadata.name"
+                                        :timeline="timeline"
+                                        @edit="handleOpenEditingModal"
+                                        @delete="pageRefetch"
                                     >
-                                        <IconCheckboxFill
-                                                :class="{
-                        ':uno: !text-primary': selectedTimelines.has(timeline),
-                      }"
-                                                class=":uno: hover:text-primary mr-1 mt-1 h-6 w-6 cursor-pointer text-white transition-all"
-                                        />
-                                    </div>
-                                </div>
-                            </VCard>
-                        </VueDraggable>
+                                        <template #checkbox>
+                                            <input
+                                                v-model="selectedTimelineNames"
+                                                :value="timeline.metadata.name"
+                                                name="timeline-checkbox"
+                                                type="checkbox"
+                                            />
+                                        </template>
+                                    </TimelineListItem>
+                                </tbody>
+                            </table>
+                        </div>
                     </Transition>
 
                     <template #footer>
-                        <VPagination v-model:page="page" v-model:size="size" :total="total" :size-options="[20, 30, 50, 100]" />
+                        <VPagination
+                            v-model:page="page"
+                            v-model:size="size"
+                            page-label="页"
+                            size-label="条 / 页"
+                            :total-label="`共 ${total} 项数据`"
+                            :total="total"
+                            :size-options="[20, 30, 50, 100]"
+                        />
                     </template>
                 </VCard>
             </div>

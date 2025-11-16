@@ -43,10 +43,10 @@ export interface TimelineGroupList {
 export interface TimelineSpec {
   groupName: string;
   date?: string;
-  description?: string;
+  displayName?: string;
   image?: string;
   active?: boolean;
-  postName?: string;
+  relatedLinks?: string;
 }
 
 export interface Timeline {

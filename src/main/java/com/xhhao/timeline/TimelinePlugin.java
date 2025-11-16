@@ -43,9 +43,9 @@ public class TimelinePlugin extends BasePlugin {
                 simpleAttribute(Timeline.class, timeline -> timeline.getSpec().getDate()))));
 
         schemeManager.register(Timeline.class, indexSpecs -> indexSpecs.add(new IndexSpec()
-            .setName("spec.description")
+            .setName("spec.displayName")
             .setIndexFunc(
-                simpleAttribute(Timeline.class, timeline -> timeline.getSpec().getDescription()))));
+                simpleAttribute(Timeline.class, timeline -> timeline.getSpec().getDisplayName()))));
 
         schemeManager.register(Timeline.class, indexSpecs -> indexSpecs.add(new IndexSpec()
             .setName("spec.active")
@@ -54,9 +54,9 @@ public class TimelinePlugin extends BasePlugin {
                     timeline.getSpec().getActive() != null ? String.valueOf(timeline.getSpec().getActive()) : null))));
 
         schemeManager.register(Timeline.class, indexSpecs -> indexSpecs.add(new IndexSpec()
-            .setName("spec.postName")
+            .setName("spec.relatedLinks")
             .setIndexFunc(
-                simpleAttribute(Timeline.class, timeline -> timeline.getSpec().getPostName()))));
+                simpleAttribute(Timeline.class, timeline -> timeline.getSpec().getRelatedLinks()))));
 
         // Register TimelineGroup indexes
         schemeManager.register(TimelineGroup.class, indexSpecs -> indexSpecs.add(new IndexSpec()

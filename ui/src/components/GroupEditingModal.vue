@@ -68,11 +68,11 @@ const handleSaveGroup = async () => {
         isSubmitting.value = true;
         if (isUpdateMode.value) {
             await axiosInstance.put<TimelineGroup>(
-                    `/apis/api.timeline.xhhao.com/v1alpha1/timelinegroups/${formState.value.metadata.name}`,
+                    `/apis/timeline.xhhao.com/v1alpha1/timelinegroups/${formState.value.metadata.name}`,
                     formState.value
             );
         } else {
-            const { data } = await axiosInstance.post<TimelineGroup>(`/apis/api.timeline.xhhao.com/v1alpha1/timelinegroups`, formState.value);
+            const { data } = await axiosInstance.post<TimelineGroup>(`/apis/timeline.xhhao.com/v1alpha1/timelinegroups`, formState.value);
             emit("saved", data);
         }
         modal.value?.close();

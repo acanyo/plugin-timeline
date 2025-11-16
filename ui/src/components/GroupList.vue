@@ -103,7 +103,7 @@ const handleSaveInBatch = async () => {
             if (group.spec) {
                 group.spec.priority = index;
             }
-            return axiosInstance.put(`/apis/api.timeline.xhhao.com/v1alpha1/timelinegroups/${group.metadata.name}`, group);
+            return axiosInstance.put(`/apis/timeline.xhhao.com/v1alpha1/timelinegroups/${group.metadata.name}`, group);
         });
         if (promises) {
             await Promise.all(promises);
@@ -123,7 +123,7 @@ const handleDelete = async (group: TimelineGroup) => {
         confirmType: "danger",
         onConfirm: async () => {
             try {
-                await axiosInstance.delete(`/apis/api.timeline.xhhao.com/v1alpha1/timelinegroups/${group.metadata.name}`);
+                await axiosInstance.delete(`/apis/timeline.xhhao.com/v1alpha1/timelinegroups/${group.metadata.name}`);
             } catch (e) {
                 console.error(e);
             } finally {

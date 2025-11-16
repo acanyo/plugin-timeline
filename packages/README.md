@@ -28,6 +28,14 @@ pnpm dev
 npm run dev
 ```
 
+启动后会自动打开浏览器，访问 `http://localhost:3000/demo-simple.html` 查看简单示例。
+
+或者访问 `http://localhost:3000/demo.html` 查看完整演示，包含：
+- 基础使用示例
+- 自定义样式示例（绿色主题、紫色主题）
+- 内联样式自定义
+- 深色模式切换
+
 ### 构建
 
 ```bash

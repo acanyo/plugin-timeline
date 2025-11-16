@@ -35,7 +35,7 @@ public class TimelineEndpoint implements CustomEndpoint {
             .GET("timelines", this::listTimeline,
                 builder -> {
                     builder.operationId("ListTimelines")
-                        .description("List timelines.")
+                        .description("List timelines. Support query by group name using 'group' parameter.")
                         .tag(tag)
                         .response(responseBuilder().implementation(
                             ListResult.generateGenericClass(Timeline.class)));

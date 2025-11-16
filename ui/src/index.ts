@@ -3,6 +3,8 @@ import { defineAsyncComponent, markRaw } from "vue";
 import TablerClock from '~icons/tabler/clock'
 import "uno.css";
 import { VLoading } from "@halo-dev/components";
+import '@xhhaocom/timeline-view';
+import { TimelineExtension } from "@/editor";
 
 export default definePlugin({
   routes: [
@@ -26,4 +28,9 @@ export default definePlugin({
       },
     },
   ],
+  extensionPoints: {
+    "default:editor:extension:create": () => {
+      return [TimelineExtension];
+    },
+  },
 });

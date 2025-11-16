@@ -10,13 +10,13 @@ spec:
   requires: ">=2.21.0"
   author:
     name: Handsome
-    website: https://github.com/Handsome
-  logo: logo.png
-  homepage: https://github.com/Handsome/timeline#readme
-  repo: https://github.com/Handsome/timeline
-  issues: https://github.com/Handsome/timeline/issues
-  displayName: "timeline"
-  description: "timeline - Halo 插件"
+    website: https://www.xhhao.com
+  logo: logo.svg
+  homepage: https://github.com/acanyo/timeline#readme
+  repo: https://github.com/acanyo/timeline
+  issues: https://github.com/acanyo/timeline/issues
+  displayName: "时间轴"
+  description: "为你的 Halo2 提供一个可灵活插入的时间轴组件"
   license:
     - name: "GPL-3.0"
       url: "https://github.com/Handsome/timeline/blob/main/LICENSE"

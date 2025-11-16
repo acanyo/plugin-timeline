@@ -34,8 +34,8 @@ public class Timeline extends AbstractExtension {
         @Schema(description = "日期，格式：YYYY-MM-DD", example = "2024-01-15")
         private String date;
 
-        @Schema(description = "描述信息", example = "项目正式启动，团队开始规划开发路线图")
-        private String description;
+        @Schema(description = "显示名称", example = "项目正式启动")
+        private String displayName;
 
         @Schema(description = "图片URL", example = "https://example.com/image.jpg")
         private String image;
@@ -43,8 +43,8 @@ public class Timeline extends AbstractExtension {
         @Schema(description = "是否激活状态，用于高亮显示", example = "true")
         private Boolean active;
 
-        @Schema(description = "关联的文章名称（可选），用于关联 Halo 文章")
-        private String postName;
+        @Schema(description = "相关链接")
+        private String relatedLinks;
     }
     @JsonIgnore
     public boolean isDeleted() {

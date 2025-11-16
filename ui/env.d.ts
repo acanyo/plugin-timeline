@@ -8,3 +8,14 @@ declare module 'axios' {
     mute?: boolean
   }
 }
+
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      'timeline-view': {
+        'group-name'?: string;
+        orientation?: 'vertical' | 'horizontal';
+      };
+    }
+  }
+}
