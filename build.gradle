@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id "io.freefair.lombok" version "8.13"
     id "run.halo.plugin.devtools" version "0.6.1"
+    id "com.github.node-gradle.node" version "7.1.0"
 }
 
 group 'com.xhhao.timeline'

@@ -34,6 +34,7 @@ nbproject/private/
 build/
 nbbuild/
 dist/
+!packages/dist/
 nbdist/
 .nb-gradle/
 
