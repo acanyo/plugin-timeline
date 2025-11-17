@@ -21,7 +21,7 @@ const groupName = computed({
 });
 
 const orientation = computed(() => {
-  return (props.node?.attrs.orientation as 'vertical' | 'horizontal') || 'vertical';
+  return (props.node?.attrs.orientation as 'vertical' | 'horizontal' | 'alternating') || 'vertical';
 });
 
 const timelineComponent = computed(() => {
@@ -36,8 +36,8 @@ const timelineComponent = computed(() => {
 </script>
 
 <template>
-  <node-view-wrapper 
-    as="div" 
+  <node-view-wrapper
+    as="div"
     :class="['timeline-view-container', {'timeline-view-container--selected': selected}]">
     <div class="timeline-view-nav">
       <div class="timeline-view-nav-start">
@@ -78,9 +78,9 @@ const timelineComponent = computed(() => {
         :is="timelineComponent"
         :key="groupName"
       />
-      <VEmpty 
+      <VEmpty
         v-else
-        message="请在上方选择分组" 
+        message="请在上方选择分组"
         title="未选择分组"
       />
     </div>
@@ -155,4 +155,4 @@ const timelineComponent = computed(() => {
 .timeline-group-select-input {
   font-size: 14px;
 }
-</style>  
+</style>

@@ -4,7 +4,7 @@ export const timelineStyles = css`
   :host {
     display: block;
     --timeline-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    
+
     --timeline-text-color: #374151;
     --timeline-text-color-dark: #e5e7eb;
     --timeline-line-color: #e5e7eb;
@@ -35,7 +35,7 @@ export const timelineStyles = css`
     --timeline-marker-shadow-dark: 0 0 0 3px rgba(129, 140, 248, 0.15);
     --timeline-empty-color: #9ca3af;
     --timeline-empty-color-dark: #6b7280;
-    
+
     font-family: var(--timeline-font-family);
     color: var(--timeline-text-color);
     font-size: 14px;
@@ -82,7 +82,7 @@ export const timelineStyles = css`
   .timeline-marker {
     position: absolute;
     left: 0;
-    top: 4px;
+    top: 3px;
     width: 12px;
     height: 12px;
     border-radius: 50%;
@@ -111,7 +111,7 @@ export const timelineStyles = css`
     background: transparent;
     border: none;
     border-radius: 4px;
-    padding: 12px 14px;
+    padding: 0 14px 12px 14px;
     transition: background 0.2s ease;
     display: flex;
     gap: 12px;
@@ -120,7 +120,7 @@ export const timelineStyles = css`
   }
 
   .timeline-item.has-image .timeline-content {
-    padding: 12px;
+    padding: 0 12px 12px 12px;
   }
 
   .timeline-item:hover .timeline-content {
@@ -159,7 +159,9 @@ export const timelineStyles = css`
     color: var(--timeline-date-color);
     font-weight: 400;
     margin-bottom: 6px;
+    margin-top: 0;
     letter-spacing: 0.01em;
+    line-height: 1.5;
   }
 
   .timeline-title {
@@ -281,9 +283,12 @@ export const timelineStyles = css`
   :host([orientation="horizontal"]) .timeline-item {
     flex: 1;
     padding-left: 0;
-    padding-top: 28px;
+    padding-top: 16px;
     padding-bottom: 0;
     margin-right: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
   :host([orientation="horizontal"]) .timeline-item:last-child {
@@ -292,12 +297,121 @@ export const timelineStyles = css`
 
   :host([orientation="horizontal"]) .timeline-marker {
     left: 50%;
-    top: 0;
+    top: 3px;
     transform: translateX(-50%);
   }
 
   :host([orientation="horizontal"]) .timeline-item:hover .timeline-marker {
     transform: translateX(-50%);
+  }
+
+  :host([orientation="horizontal"]) .timeline-content {
+    padding: 0;
+    margin-top: 0;
+    width: 100%;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+  }
+
+  :host([orientation="horizontal"]) .timeline-content-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  /* 交替布局 */
+  :host([orientation="alternating"]) .timeline {
+    position: relative;
+    padding: 4px 0;
+  }
+
+  :host([orientation="alternating"]) .timeline::before {
+    left: 50%;
+    transform: translateX(-50%);
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: var(--timeline-line-color);
+  }
+
+  :host([orientation="alternating"]) .timeline-item {
+    position: relative;
+    padding-left: 0;
+    padding-right: 0;
+    padding-bottom: 20px;
+    display: flex;
+    align-items: flex-start;
+  }
+
+  :host([orientation="alternating"]) .timeline-item:last-child {
+    padding-bottom: 0;
+  }
+
+  :host([orientation="alternating"]) .timeline-marker {
+    position: absolute;
+    left: 50%;
+    top: 3px;
+    transform: translateX(-50%);
+    z-index: 2;
+  }
+
+  :host([orientation="alternating"]) .timeline-item:hover .timeline-marker {
+    transform: translateX(-50%);
+  }
+
+  :host([orientation="alternating"]) .timeline-item-right {
+    flex-direction: row;
+  }
+
+  :host([orientation="alternating"]) .timeline-item-right .timeline-content {
+    margin-left: calc(50% + 20px);
+    margin-right: 0;
+    width: calc(50% - 20px);
+    max-width: 400px;
+    padding: 0 14px 12px 14px;
+    text-align: left;
+  }
+
+  :host([orientation="alternating"]) .timeline-item-right.has-image .timeline-content {
+    padding: 0 12px 12px 12px;
+  }
+
+  /* 左侧内容（奇数索引，1, 3, 5...） */
+  :host([orientation="alternating"]) .timeline-item-left {
+    flex-direction: row-reverse;
+  }
+
+  :host([orientation="alternating"]) .timeline-item-left .timeline-content {
+    margin-right: calc(50% + 20px);
+    margin-left: 0;
+    width: calc(50% - 20px);
+    max-width: 400px;
+    padding: 0 14px 12px 14px;
+    text-align: right;
+  }
+
+  :host([orientation="alternating"]) .timeline-item-left.has-image .timeline-content {
+    padding: 0 12px 12px 12px;
+  }
+
+  /* 交替布局下的图片和内容对齐 */
+  :host([orientation="alternating"]) .timeline-item-right .timeline-content {
+    justify-content: flex-start;
+  }
+
+  :host([orientation="alternating"]) .timeline-item-left .timeline-content {
+    justify-content: flex-end;
+  }
+
+  :host([orientation="alternating"]) .timeline-item-left .timeline-content-inner {
+    text-align: right;
+  }
+
+  /* 暗色主题下的交替布局 */
+  :host([orientation="alternating"]) .timeline.dark .timeline::before {
+    background: var(--timeline-line-color-dark);
   }
 `;
 

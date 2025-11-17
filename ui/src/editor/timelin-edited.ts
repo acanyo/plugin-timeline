@@ -6,7 +6,7 @@ import {
   nodeInputRule,
   type Range,
   VueNodeViewRenderer,
-  type EditorState, 
+  type EditorState,
   BlockActionSeparator,
 } from "@halo-dev/richtext-editor";
 import TimelineView from "./TimelineView.vue";
@@ -18,12 +18,13 @@ import TablerClock from '~icons/tabler/clock?width=1.2em&height=1.2em';
 import MdiViewAgendaOutline from '~icons/mdi/view-agenda-outline?width=1.2em&height=1.2em';
 import MdiViewAgenda from '~icons/mdi/view-agenda?width=1.2em&height=1.2em';
 import BubbleItemICardTitle from "@/editor/BubbleItemICardTitle.vue";
+import BubbleItemLayoutSelect from "@/editor/BubbleItemLayoutSelect.vue";
 import MdiFormatTitle from '~icons/mdi/format-title?width=1.2em&height=1.2em';
 
 declare module "@halo-dev/richtext-editor" {
   interface Commands<ReturnType> {
     "timeline-view": {
-      setTimelineView: (options: { groupName?: string; orientation?: 'vertical' | 'horizontal' }) => ReturnType;
+      setTimelineView: (options: { groupName?: string; orientation?: 'vertical' | 'horizontal' | 'alternating' }) => ReturnType;
     };
   }
 }
@@ -78,11 +79,11 @@ const TimelineExtension = Node.create({
   renderHTML({ HTMLAttributes }: { HTMLAttributes: Record<string, any> }) {
     return ["timeline-view", mergeAttributes(HTMLAttributes)];
   },
-  
+
   addCommands() {
     return {
       setTimelineView:
-        (options: { groupName?: string; orientation?: 'vertical' | 'horizontal' }) =>
+        (options: { groupName?: string; orientation?: 'vertical' | 'horizontal' | 'alternating' }) =>
           ({ commands }: { commands: any }) => {
             return commands.insertContent({
               type: this.name,
@@ -91,7 +92,7 @@ const TimelineExtension = Node.create({
           },
     };
   },
-  
+
   addInputRules() {
     return [
       nodeInputRule({
@@ -141,25 +142,9 @@ const TimelineExtension = Node.create({
           items: [
             {
               priority: 45,
+              component: markRaw(BubbleItemLayoutSelect),
               props: {
-                title:
-                  editor.getAttributes(TimelineExtension.name).orientation === "horizontal"
-                    ? "横向布局"
-                    : "竖向布局",
-                isActive: () => {
-                  return editor.getAttributes(TimelineExtension.name).orientation === "horizontal";
-                },
-                icon: markRaw(
-                  editor.getAttributes(TimelineExtension.name).orientation === "horizontal"
-                    ? MdiViewAgenda
-                    : MdiViewAgendaOutline
-                ),
-                action: () => {
-                  const orientation = editor.getAttributes(TimelineExtension.name).orientation;
-                  editor.commands.updateAttributes(TimelineExtension.name, { 
-                    orientation: orientation === "horizontal" ? "vertical" : "horizontal" 
-                  });
-                },
+                editor,
               },
             },
             {

@@ -13,7 +13,7 @@ export class Timeline extends LitElement {
   groupName: string = '';
 
   @property({ type: String })
-  orientation: 'vertical' | 'horizontal' = 'vertical';
+  orientation: 'vertical' | 'horizontal' | 'alternating' = 'vertical';
 
   @state()
   private items: TimelineItem[] = [];
@@ -95,8 +95,12 @@ export class Timeline extends LitElement {
     return html`
       <div class="timeline ${this.isDark ? 'dark' : ''}">
         ${this.items.map(
-          (item) => html`
-            <div class="timeline-item ${item.image ? 'has-image' : ''}">
+          (item, index) => {
+            const isAlternating = this.orientation === 'alternating';
+            const isEven = index % 2 === 0;
+            const sideClass = isAlternating ? (isEven ? 'timeline-item-right' : 'timeline-item-left') : '';
+            return html`
+            <div class="timeline-item ${item.image ? 'has-image' : ''} ${sideClass}">
               <div class="timeline-marker ${item.active ? 'active' : ''}"></div>
               <div class="timeline-content">
                 ${item.image ? html`
@@ -115,7 +119,8 @@ export class Timeline extends LitElement {
                 </div>
               </div>
             </div>
-          `
+          `;
+          }
         )}
       </div>
     `;

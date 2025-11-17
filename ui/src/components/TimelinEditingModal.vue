@@ -2,7 +2,7 @@
 import type {Timeline} from "@/types";
 import {submitForm} from "@formkit/core";
 import {axiosInstance} from "@halo-dev/api-client";
-import {Toast, VAlert, VButton, VLoading, VModal, VSpace} from "@halo-dev/components";
+import {VAlert, VButton, VModal, VSpace} from "@halo-dev/components";
 import {useMagicKeys} from "@vueuse/core";
 import {cloneDeep} from "lodash-es";
 import {computed, nextTick, onMounted, ref, useTemplateRef, watch} from "vue";
@@ -42,6 +42,7 @@ const initialFormState: Timeline = {
 
 const formState = ref<Timeline>(cloneDeep(initialFormState));
 const customUrl = ref("");
+const articleValue = ref<string | undefined>(undefined);
 const isSubmitting = ref(false);
 const modal = useTemplateRef<InstanceType<typeof VModal> | null>("modal");
 
@@ -65,17 +66,16 @@ const handleCreateOrUpdateTimeline = async () => {
         ...annotations,
         ...customAnnotations,
     };
-    
+
     // 处理关联链接：优先使用选择的文章，否则使用自定义URL
-    const articleValue = (formState.value.spec as any).article;
-    if (articleValue) {
-        formState.value.spec.relatedLinks = articleValue;
+    if (articleValue.value) {
+        formState.value.spec.relatedLinks = articleValue.value;
     } else if (customUrl.value) {
         formState.value.spec.relatedLinks = customUrl.value;
     } else {
         formState.value.spec.relatedLinks = "";
     }
-    
+
     try {
         isSubmitting.value = true;
         if (isUpdateMode.value) {
@@ -106,10 +106,18 @@ onMounted(() => {
             // 判断是URL还是文章permalink
             if (props.timeline.spec.relatedLinks.startsWith("http://") || props.timeline.spec.relatedLinks.startsWith("https://")) {
                 customUrl.value = props.timeline.spec.relatedLinks;
+                articleValue.value = undefined;
             } else {
-                (formState.value.spec as any).article = props.timeline.spec.relatedLinks;
+                articleValue.value = props.timeline.spec.relatedLinks;
+                customUrl.value = "";
             }
+        } else {
+            articleValue.value = undefined;
+            customUrl.value = "";
         }
+    } else {
+        articleValue.value = undefined;
+        customUrl.value = "";
     }
 });
 
@@ -153,22 +161,23 @@ watch(Meta_Enter, (v) => {
                     <FormKit name="displayName" label="显示名称" type="textarea" validation="required"></FormKit>
                     <FormKit name="image" label="图片" type="attachment" :accepts="['image/*']"></FormKit>
                     <FormKit name="active" label="激活状态" type="checkbox" help="用于高亮显示"></FormKit>
-                    
+
                     <!-- 关联信息提示 -->
-                    <VAlert 
-                        type="info" 
-                        title="关联信息说明" 
+                    <VAlert
+                        type="info"
+                        title="关联信息说明"
                         description="请选择关联文章或输入自定义链接地址。文章优先级最高：如果选择了文章，将使用文章链接；否则使用自定义链接地址。"
                     />
 
                     <FormKit
-                        v-model="(formState.spec as any).article"
+                        v-model="articleValue"
                         type="select"
                         name="article"
                         label="关联文章"
                         :multiple="false"
                         clearable
                         searchable
+                        placeholder="请选择文章（可选）"
                         action="/apis/content.halo.run/v1alpha1/posts"
                         :request-option="{
                             method: 'GET',
