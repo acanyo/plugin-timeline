@@ -12,7 +12,7 @@ spec:
     name: Handsome
     website: https://www.xhhao.com
   logo: logo.svg
-  homepage: https://github.com/acanyo/timeline#readme
+  homepage: https://www.xhhao.com
   repo: https://github.com/acanyo/timeline
   issues: https://github.com/acanyo/timeline/issues
   displayName: "时间轴"
