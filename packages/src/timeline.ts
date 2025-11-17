@@ -96,17 +96,23 @@ export class Timeline extends LitElement {
       <div class="timeline ${this.isDark ? 'dark' : ''}">
         ${this.items.map(
           (item) => html`
-            <div class="timeline-item">
+            <div class="timeline-item ${item.image ? 'has-image' : ''}">
               <div class="timeline-marker ${item.active ? 'active' : ''}"></div>
               <div class="timeline-content">
-                ${item.image ? html`<img src="${item.image}" alt="${item.displayName || ''}" class="timeline-image" />` : ''}
-                ${item.date ? html`<div class="timeline-date">${item.date}</div>` : ''}
-                ${item.displayName ? html`<div class="timeline-title">${item.displayName}</div>` : ''}
-                ${item.relatedLinks ? html`
-                  <div class="timeline-link">
-                    <a href="${item.relatedLinks}" target="_blank" rel="noopener noreferrer">查看详情</a>
+                ${item.image ? html`
+                  <div class="timeline-image-wrapper">
+                    <img src="${item.image}" alt="${item.displayName || ''}" class="timeline-image" />
                   </div>
                 ` : ''}
+                <div class="timeline-content-inner">
+                  ${item.date ? html`<div class="timeline-date">${item.date}</div>` : ''}
+                  ${item.displayName ? html`<div class="timeline-title">${item.displayName}</div>` : ''}
+                  ${item.relatedLinks ? html`
+                    <div class="timeline-link">
+                      <a href="${item.relatedLinks}" target="_blank" rel="noopener noreferrer">查看关联</a>
+                    </div>
+                  ` : ''}
+                </div>
               </div>
             </div>
           `

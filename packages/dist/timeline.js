@@ -1,7 +1,7 @@
-const N = globalThis, D = N.ShadowRoot && (N.ShadyCSS === void 0 || N.ShadyCSS.nativeShadow) && "adoptedStyleSheets" in Document.prototype && "replace" in CSSStyleSheet.prototype, I = Symbol(), X = /* @__PURE__ */ new WeakMap();
+const N = globalThis, D = N.ShadowRoot && (N.ShadyCSS === void 0 || N.ShadyCSS.nativeShadow) && "adoptedStyleSheets" in Document.prototype && "replace" in CSSStyleSheet.prototype, j = Symbol(), J = /* @__PURE__ */ new WeakMap();
 let re = class {
   constructor(e, t, i) {
-    if (this._$cssResult$ = !0, i !== I) throw Error("CSSResult is not constructable. Use `unsafeCSS` or `css` instead.");
+    if (this._$cssResult$ = !0, i !== j) throw Error("CSSResult is not constructable. Use `unsafeCSS` or `css` instead.");
     this.cssText = e, this.t = t;
   }
   get styleSheet() {
@@ -9,7 +9,7 @@ let re = class {
     const t = this.t;
     if (D && e === void 0) {
       const i = t !== void 0 && t.length === 1;
-      i && (e = X.get(t)), e === void 0 && ((this.o = e = new CSSStyleSheet()).replaceSync(this.cssText), i && X.set(t, e));
+      i && (e = J.get(t)), e === void 0 && ((this.o = e = new CSSStyleSheet()).replaceSync(this.cssText), i && J.set(t, e));
     }
     return e;
   }
@@ -17,28 +17,28 @@ let re = class {
     return this.cssText;
   }
 };
-const le = (s) => new re(typeof s == "string" ? s : s + "", void 0, I), he = (s, ...e) => {
+const le = (s) => new re(typeof s == "string" ? s : s + "", void 0, j), he = (s, ...e) => {
   const t = s.length === 1 ? s[0] : e.reduce(((i, r, o) => i + ((n) => {
     if (n._$cssResult$ === !0) return n.cssText;
     if (typeof n == "number") return n;
     throw Error("Value passed to 'css' function must be a 'css' function result: " + n + ". Use 'unsafeCSS' to pass non-literal values, but take care to ensure page security.");
   })(r) + s[o + 1]), s[0]);
-  return new re(t, s, I);
+  return new re(t, s, j);
 }, ce = (s, e) => {
   if (D) s.adoptedStyleSheets = e.map(((t) => t instanceof CSSStyleSheet ? t : t.styleSheet));
   else for (const t of e) {
     const i = document.createElement("style"), r = N.litNonce;
     r !== void 0 && i.setAttribute("nonce", r), i.textContent = t.cssText, s.appendChild(i);
   }
-}, Y = D ? (s) => s : (s) => s instanceof CSSStyleSheet ? ((e) => {
+}, K = D ? (s) => s : (s) => s instanceof CSSStyleSheet ? ((e) => {
   let t = "";
   for (const i of e.cssRules) t += i.cssText;
   return le(t);
 })(s) : s;
-const { is: de, defineProperty: me, getOwnPropertyDescriptor: pe, getOwnPropertyNames: ue, getOwnPropertySymbols: fe, getPrototypeOf: $e } = Object, z = globalThis, J = z.trustedTypes, ge = J ? J.emptyScript : "", ve = z.reactiveElementPolyfillSupport, E = (s, e) => s, M = { toAttribute(s, e) {
+const { is: de, defineProperty: me, getOwnPropertyDescriptor: pe, getOwnPropertyNames: ue, getOwnPropertySymbols: fe, getPrototypeOf: ge } = Object, R = globalThis, X = R.trustedTypes, $e = X ? X.emptyScript : "", ve = R.reactiveElementPolyfillSupport, E = (s, e) => s, M = { toAttribute(s, e) {
   switch (e) {
     case Boolean:
-      s = s ? ge : null;
+      s = s ? $e : null;
       break;
     case Object:
     case Array:
@@ -63,8 +63,8 @@ const { is: de, defineProperty: me, getOwnPropertyDescriptor: pe, getOwnProperty
       }
   }
   return t;
-} }, j = (s, e) => !de(s, e), K = { attribute: !0, type: String, converter: M, reflect: !1, useDefault: !1, hasChanged: j };
-Symbol.metadata ??= Symbol("metadata"), z.litPropertyMetadata ??= /* @__PURE__ */ new WeakMap();
+} }, I = (s, e) => !de(s, e), Z = { attribute: !0, type: String, converter: M, reflect: !1, useDefault: !1, hasChanged: I };
+Symbol.metadata ??= Symbol("metadata"), R.litPropertyMetadata ??= /* @__PURE__ */ new WeakMap();
 let y = class extends HTMLElement {
   static addInitializer(e) {
     this._$Ei(), (this.l ??= []).push(e);
@@ -72,7 +72,7 @@ let y = class extends HTMLElement {
   static get observedAttributes() {
     return this.finalize(), this._$Eh && [...this._$Eh.keys()];
   }
-  static createProperty(e, t = K) {
+  static createProperty(e, t = Z) {
     if (t.state && (t.attribute = !1), this._$Ei(), this.prototype.hasOwnProperty(e) && ((t = Object.create(t)).wrapped = !0), this.elementProperties.set(e, t), !t.noAccessor) {
       const i = Symbol(), r = this.getPropertyDescriptor(e, i, t);
       r !== void 0 && me(this.prototype, e, r);
@@ -90,11 +90,11 @@ let y = class extends HTMLElement {
     }, configurable: !0, enumerable: !0 };
   }
   static getPropertyOptions(e) {
-    return this.elementProperties.get(e) ?? K;
+    return this.elementProperties.get(e) ?? Z;
   }
   static _$Ei() {
     if (this.hasOwnProperty(E("elementProperties"))) return;
-    const e = $e(this);
+    const e = ge(this);
     e.finalize(), e.l !== void 0 && (this.l = [...e.l]), this.elementProperties = new Map(e.elementProperties);
   }
   static finalize() {
@@ -119,8 +119,8 @@ let y = class extends HTMLElement {
     const t = [];
     if (Array.isArray(e)) {
       const i = new Set(e.flat(1 / 0).reverse());
-      for (const r of i) t.unshift(Y(r));
-    } else e !== void 0 && t.push(Y(e));
+      for (const r of i) t.unshift(K(r));
+    } else e !== void 0 && t.push(K(e));
     return t;
   }
   static _$Eu(e, t) {
@@ -178,7 +178,7 @@ let y = class extends HTMLElement {
   requestUpdate(e, t, i) {
     if (e !== void 0) {
       const r = this.constructor, o = this[e];
-      if (i ??= r.getPropertyOptions(e), !((i.hasChanged ?? j)(o, t) || i.useDefault && i.reflect && o === this._$Ej?.get(e) && !this.hasAttribute(r._$Eu(e, i)))) return;
+      if (i ??= r.getPropertyOptions(e), !((i.hasChanged ?? I)(o, t) || i.useDefault && i.reflect && o === this._$Ej?.get(e) && !this.hasAttribute(r._$Eu(e, i)))) return;
       this.C(e, t, i);
     }
     this.isUpdatePending === !1 && (this._$ES = this._$EP());
@@ -246,13 +246,13 @@ let y = class extends HTMLElement {
   firstUpdated(e) {
   }
 };
-y.elementStyles = [], y.shadowRootOptions = { mode: "open" }, y[E("elementProperties")] = /* @__PURE__ */ new Map(), y[E("finalized")] = /* @__PURE__ */ new Map(), ve?.({ ReactiveElement: y }), (z.reactiveElementVersions ??= []).push("2.1.1");
-const B = globalThis, H = B.trustedTypes, Z = H ? H.createPolicy("lit-html", { createHTML: (s) => s }) : void 0, se = "$lit$", $ = `lit$${Math.random().toFixed(9).slice(2)}$`, oe = "?" + $, be = `<${oe}>`, _ = document, C = () => _.createComment(""), P = (s) => s === null || typeof s != "object" && typeof s != "function", q = Array.isArray, _e = (s) => q(s) || typeof s?.[Symbol.iterator] == "function", L = `[ 	
-\f\r]`, w = /<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g, G = /-->/g, Q = />/g, v = RegExp(`>|${L}(?:([^\\s"'>=/]+)(${L}*=${L}*(?:[^ 	
-\f\r"'\`<>=]|("|')|))|$)`, "g"), ee = /'/g, te = /"/g, ne = /^(?:script|style|textarea|title)$/i, ye = (s) => (e, ...t) => ({ _$litType$: s, strings: e, values: t }), f = ye(1), k = Symbol.for("lit-noChange"), d = Symbol.for("lit-nothing"), ie = /* @__PURE__ */ new WeakMap(), b = _.createTreeWalker(_, 129);
+y.elementStyles = [], y.shadowRootOptions = { mode: "open" }, y[E("elementProperties")] = /* @__PURE__ */ new Map(), y[E("finalized")] = /* @__PURE__ */ new Map(), ve?.({ ReactiveElement: y }), (R.reactiveElementVersions ??= []).push("2.1.1");
+const B = globalThis, H = B.trustedTypes, G = H ? H.createPolicy("lit-html", { createHTML: (s) => s }) : void 0, se = "$lit$", g = `lit$${Math.random().toFixed(9).slice(2)}$`, oe = "?" + g, _e = `<${oe}>`, b = document, C = () => b.createComment(""), P = (s) => s === null || typeof s != "object" && typeof s != "function", q = Array.isArray, be = (s) => q(s) || typeof s?.[Symbol.iterator] == "function", L = `[ 	
+\f\r]`, w = /<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g, Q = /-->/g, Y = />/g, v = RegExp(`>|${L}(?:([^\\s"'>=/]+)(${L}*=${L}*(?:[^ 	
+\f\r"'\`<>=]|("|')|))|$)`, "g"), ee = /'/g, te = /"/g, ne = /^(?:script|style|textarea|title)$/i, ye = (s) => (e, ...t) => ({ _$litType$: s, strings: e, values: t }), f = ye(1), k = Symbol.for("lit-noChange"), d = Symbol.for("lit-nothing"), ie = /* @__PURE__ */ new WeakMap(), _ = b.createTreeWalker(b, 129);
 function ae(s, e) {
   if (!q(s) || !s.hasOwnProperty("raw")) throw Error("invalid template strings array");
-  return Z !== void 0 ? Z.createHTML(e) : e;
+  return G !== void 0 ? G.createHTML(e) : e;
 }
 const ke = (s, e) => {
   const t = s.length - 1, i = [];
@@ -260,9 +260,9 @@ const ke = (s, e) => {
   for (let l = 0; l < t; l++) {
     const a = s[l];
     let c, m, h = -1, p = 0;
-    for (; p < a.length && (n.lastIndex = p, m = n.exec(a), m !== null); ) p = n.lastIndex, n === w ? m[1] === "!--" ? n = G : m[1] !== void 0 ? n = Q : m[2] !== void 0 ? (ne.test(m[2]) && (r = RegExp("</" + m[2], "g")), n = v) : m[3] !== void 0 && (n = v) : n === v ? m[0] === ">" ? (n = r ?? w, h = -1) : m[1] === void 0 ? h = -2 : (h = n.lastIndex - m[2].length, c = m[1], n = m[3] === void 0 ? v : m[3] === '"' ? te : ee) : n === te || n === ee ? n = v : n === G || n === Q ? n = w : (n = v, r = void 0);
+    for (; p < a.length && (n.lastIndex = p, m = n.exec(a), m !== null); ) p = n.lastIndex, n === w ? m[1] === "!--" ? n = Q : m[1] !== void 0 ? n = Y : m[2] !== void 0 ? (ne.test(m[2]) && (r = RegExp("</" + m[2], "g")), n = v) : m[3] !== void 0 && (n = v) : n === v ? m[0] === ">" ? (n = r ?? w, h = -1) : m[1] === void 0 ? h = -2 : (h = n.lastIndex - m[2].length, c = m[1], n = m[3] === void 0 ? v : m[3] === '"' ? te : ee) : n === te || n === ee ? n = v : n === Q || n === Y ? n = w : (n = v, r = void 0);
     const u = n === v && s[l + 1].startsWith("/>") ? " " : "";
-    o += n === w ? a + be : h >= 0 ? (i.push(c), a.slice(0, h) + se + a.slice(h) + $ + u) : a + $ + (h === -2 ? l : u);
+    o += n === w ? a + _e : h >= 0 ? (i.push(c), a.slice(0, h) + se + a.slice(h) + g + u) : a + g + (h === -2 ? l : u);
   }
   return [ae(s, o + (s[t] || "<?>") + (e === 2 ? "</svg>" : e === 3 ? "</math>" : "")), i];
 };
@@ -272,34 +272,34 @@ class O {
     this.parts = [];
     let o = 0, n = 0;
     const l = e.length - 1, a = this.parts, [c, m] = ke(e, t);
-    if (this.el = O.createElement(c, i), b.currentNode = this.el.content, t === 2 || t === 3) {
+    if (this.el = O.createElement(c, i), _.currentNode = this.el.content, t === 2 || t === 3) {
       const h = this.el.content.firstChild;
       h.replaceWith(...h.childNodes);
     }
-    for (; (r = b.nextNode()) !== null && a.length < l; ) {
+    for (; (r = _.nextNode()) !== null && a.length < l; ) {
       if (r.nodeType === 1) {
         if (r.hasAttributes()) for (const h of r.getAttributeNames()) if (h.endsWith(se)) {
-          const p = m[n++], u = r.getAttribute(h).split($), U = /([.?@])?(.*)/.exec(p);
-          a.push({ type: 1, index: o, name: U[2], strings: u, ctor: U[1] === "." ? xe : U[1] === "?" ? we : U[1] === "@" ? Ee : R }), r.removeAttribute(h);
-        } else h.startsWith($) && (a.push({ type: 6, index: o }), r.removeAttribute(h));
+          const p = m[n++], u = r.getAttribute(h).split(g), U = /([.?@])?(.*)/.exec(p);
+          a.push({ type: 1, index: o, name: U[2], strings: u, ctor: U[1] === "." ? xe : U[1] === "?" ? we : U[1] === "@" ? Ee : z }), r.removeAttribute(h);
+        } else h.startsWith(g) && (a.push({ type: 6, index: o }), r.removeAttribute(h));
         if (ne.test(r.tagName)) {
-          const h = r.textContent.split($), p = h.length - 1;
+          const h = r.textContent.split(g), p = h.length - 1;
           if (p > 0) {
             r.textContent = H ? H.emptyScript : "";
-            for (let u = 0; u < p; u++) r.append(h[u], C()), b.nextNode(), a.push({ type: 2, index: ++o });
+            for (let u = 0; u < p; u++) r.append(h[u], C()), _.nextNode(), a.push({ type: 2, index: ++o });
             r.append(h[p], C());
           }
         }
       } else if (r.nodeType === 8) if (r.data === oe) a.push({ type: 2, index: o });
       else {
         let h = -1;
-        for (; (h = r.data.indexOf($, h + 1)) !== -1; ) a.push({ type: 7, index: o }), h += $.length - 1;
+        for (; (h = r.data.indexOf(g, h + 1)) !== -1; ) a.push({ type: 7, index: o }), h += g.length - 1;
       }
       o++;
     }
   }
   static createElement(e, t) {
-    const i = _.createElement("template");
+    const i = b.createElement("template");
     return i.innerHTML = e, i;
   }
 }
@@ -320,17 +320,17 @@ class Ae {
     return this._$AM._$AU;
   }
   u(e) {
-    const { el: { content: t }, parts: i } = this._$AD, r = (e?.creationScope ?? _).importNode(t, !0);
-    b.currentNode = r;
-    let o = b.nextNode(), n = 0, l = 0, a = i[0];
+    const { el: { content: t }, parts: i } = this._$AD, r = (e?.creationScope ?? b).importNode(t, !0);
+    _.currentNode = r;
+    let o = _.nextNode(), n = 0, l = 0, a = i[0];
     for (; a !== void 0; ) {
       if (n === a.index) {
         let c;
         a.type === 2 ? c = new T(o, o.nextSibling, this, e) : a.type === 1 ? c = new a.ctor(o, a.name, a.strings, this, e) : a.type === 6 && (c = new Se(o, this, e)), this._$AV.push(c), a = i[++l];
       }
-      n !== a?.index && (o = b.nextNode(), n++);
+      n !== a?.index && (o = _.nextNode(), n++);
     }
-    return b.currentNode = _, r;
+    return _.currentNode = b, r;
   }
   p(e) {
     let t = 0;
@@ -356,7 +356,7 @@ class T {
     return this._$AB;
   }
   _$AI(e, t = this) {
-    e = A(this, e, t), P(e) ? e === d || e == null || e === "" ? (this._$AH !== d && this._$AR(), this._$AH = d) : e !== this._$AH && e !== k && this._(e) : e._$litType$ !== void 0 ? this.$(e) : e.nodeType !== void 0 ? this.T(e) : _e(e) ? this.k(e) : this._(e);
+    e = A(this, e, t), P(e) ? e === d || e == null || e === "" ? (this._$AH !== d && this._$AR(), this._$AH = d) : e !== this._$AH && e !== k && this._(e) : e._$litType$ !== void 0 ? this.$(e) : e.nodeType !== void 0 ? this.T(e) : be(e) ? this.k(e) : this._(e);
   }
   O(e) {
     return this._$AA.parentNode.insertBefore(e, this._$AB);
@@ -365,7 +365,7 @@ class T {
     this._$AH !== e && (this._$AR(), this._$AH = this.O(e));
   }
   _(e) {
-    this._$AH !== d && P(this._$AH) ? this._$AA.nextSibling.data = e : this.T(_.createTextNode(e)), this._$AH = e;
+    this._$AH !== d && P(this._$AH) ? this._$AA.nextSibling.data = e : this.T(b.createTextNode(e)), this._$AH = e;
   }
   $(e) {
     const { values: t, _$litType$: i } = e, r = typeof i == "number" ? this._$AC(e) : (i.el === void 0 && (i.el = O.createElement(ae(i.h, i.h[0]), this.options)), i);
@@ -396,7 +396,7 @@ class T {
     this._$AM === void 0 && (this._$Cv = e, this._$AP?.(e));
   }
 }
-class R {
+class z {
   get tagName() {
     return this.element.tagName;
   }
@@ -421,7 +421,7 @@ class R {
     e === d ? this.element.removeAttribute(this.name) : this.element.setAttribute(this.name, e ?? "");
   }
 }
-class xe extends R {
+class xe extends z {
   constructor() {
     super(...arguments), this.type = 3;
   }
@@ -429,7 +429,7 @@ class xe extends R {
     this.element[this.name] = e === d ? void 0 : e;
   }
 }
-class we extends R {
+class we extends z {
   constructor() {
     super(...arguments), this.type = 4;
   }
@@ -437,7 +437,7 @@ class we extends R {
     this.element.toggleAttribute(this.name, !!e && e !== d);
   }
 }
-class Ee extends R {
+class Ee extends z {
   constructor(e, t, i, r, o) {
     super(e, t, i, r, o), this.type = 5;
   }
@@ -504,7 +504,7 @@ const Te = (s) => (e, t) => {
     customElements.define(s, e);
   })) : customElements.define(s, e);
 };
-const Ue = { attribute: !0, type: String, converter: M, reflect: !1, hasChanged: j }, Ne = (s = Ue, e, t) => {
+const Ue = { attribute: !0, type: String, converter: M, reflect: !1, hasChanged: I }, Ne = (s = Ue, e, t) => {
   const { kind: i, metadata: r } = t;
   let o = globalThis.litPropertyMetadata.get(r);
   if (o === void 0 && globalThis.litPropertyMetadata.set(r, o = /* @__PURE__ */ new Map()), i === "setter" && ((s = Object.create(s)).wrapped = !0), o.set(t.name, s), i === "accessor") {
@@ -538,41 +538,43 @@ const Me = he`
   :host {
     display: block;
     --timeline-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    --timeline-text-color: #111827;
-    --timeline-text-color-dark: #f9fafb;
-    --timeline-line-color: #d1d5db;
+    
+    /* 浅色主题 - 更低调的颜色 */
+    --timeline-text-color: #374151;
+    --timeline-text-color-dark: #e5e7eb;
+    --timeline-line-color: #e5e7eb;
     --timeline-line-color-dark: #4b5563;
-    --timeline-bg-color: #fafafa;
-    --timeline-bg-color-hover: #fff;
-    --timeline-bg-color-dark: #1a1f2e;
+    --timeline-bg-color: transparent;
+    --timeline-bg-color-hover: #f9fafb;
+    --timeline-bg-color-dark: transparent;
     --timeline-bg-color-hover-dark: #1f2937;
     --timeline-marker-bg: #fff;
-    --timeline-marker-bg-dark: #1f2937;
-    --timeline-marker-border: #3b82f6;
-    --timeline-marker-border-dark: #60a5fa;
-    --timeline-marker-active-bg: #3b82f6;
-    --timeline-marker-active-bg-dark: #60a5fa;
+    --timeline-marker-bg-dark: #374151;
+    --timeline-marker-border: #9ca3af;
+    --timeline-marker-border-dark: #6b7280;
+    --timeline-marker-active-bg: #6366f1;
+    --timeline-marker-active-bg-dark: #818cf8;
     --timeline-title-color: #111827;
-    --timeline-title-color-dark: #f9fafb;
-    --timeline-title-hover-color: #3b82f6;
-    --timeline-title-hover-color-dark: #60a5fa;
-    --timeline-date-color: #3b82f6;
-    --timeline-date-color-dark: #60a5fa;
-    --timeline-link-color: #3b82f6;
-    --timeline-link-color-dark: #60a5fa;
-    --timeline-link-hover-color: #2563eb;
-    --timeline-link-hover-color-dark: #93c5fd;
-    --timeline-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    --timeline-shadow-dark: 0 4px 12px rgba(0, 0, 0, 0.4);
-    --timeline-marker-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
-    --timeline-marker-shadow-dark: 0 0 0 4px rgba(96, 165, 250, 0.2);
-    --timeline-marker-shadow-hover: 0 0 0 6px rgba(59, 130, 246, 0.2);
-    --timeline-marker-shadow-hover-dark: 0 0 0 6px rgba(96, 165, 250, 0.3);
-    --timeline-empty-color: #6b7280;
-    --timeline-empty-color-dark: #9ca3af;
+    --timeline-title-color-dark: #f3f4f6;
+    --timeline-title-hover-color: #6366f1;
+    --timeline-title-hover-color-dark: #818cf8;
+    --timeline-date-color: #6b7280;
+    --timeline-date-color-dark: #9ca3af;
+    --timeline-link-color: #6366f1;
+    --timeline-link-color-dark: #818cf8;
+    --timeline-link-hover-color: #4f46e5;
+    --timeline-link-hover-color-dark: #a5b4fc;
+    --timeline-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --timeline-shadow-dark: 0 1px 2px rgba(0, 0, 0, 0.2);
+    --timeline-marker-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    --timeline-marker-shadow-dark: 0 0 0 3px rgba(129, 140, 248, 0.15);
+    --timeline-empty-color: #9ca3af;
+    --timeline-empty-color-dark: #6b7280;
     
     font-family: var(--timeline-font-family);
     color: var(--timeline-text-color);
+    font-size: 14px;
+    line-height: 1.6;
   }
 
   .timeline-header {
@@ -589,128 +591,119 @@ const Me = he`
 
   .timeline {
     position: relative;
-    padding: 8px 0;
+    padding: 4px 0;
   }
 
   .timeline::before {
     content: '';
     position: absolute;
-    left: 7px;
+    left: 6px;
     top: 0;
     bottom: 0;
-    width: 1.5px;
+    width: 1px;
     background: var(--timeline-line-color);
   }
 
   .timeline-item {
     position: relative;
-    padding-left: 36px;
-    padding-bottom: 24px;
-    animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+    padding-left: 28px;
+    padding-bottom: 20px;
   }
-
-  .timeline-item:nth-child(1) { animation-delay: 0.05s; }
-  .timeline-item:nth-child(2) { animation-delay: 0.1s; }
-  .timeline-item:nth-child(3) { animation-delay: 0.15s; }
-  .timeline-item:nth-child(4) { animation-delay: 0.2s; }
-  .timeline-item:nth-child(5) { animation-delay: 0.25s; }
-  .timeline-item:nth-child(6) { animation-delay: 0.3s; }
 
   .timeline-item:last-child {
     padding-bottom: 0;
   }
 
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(16px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
   .timeline-marker {
     position: absolute;
     left: 0;
-    top: 2px;
-    width: 14px;
-    height: 14px;
+    top: 4px;
+    width: 12px;
+    height: 12px;
     border-radius: 50%;
     background: var(--timeline-marker-bg);
     border: 2px solid var(--timeline-marker-border);
     z-index: 2;
-    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition: all 0.2s ease;
+    box-sizing: border-box;
   }
 
   .timeline-marker.active {
     background: var(--timeline-marker-active-bg);
     border-color: var(--timeline-marker-active-bg);
-    transform: scale(1.2);
     box-shadow: var(--timeline-marker-shadow);
   }
 
   .timeline-item:hover .timeline-marker {
-    transform: scale(1.15);
     border-color: var(--timeline-title-hover-color);
   }
 
   .timeline-item:hover .timeline-marker.active {
-    transform: scale(1.25);
-    box-shadow: var(--timeline-marker-shadow-hover);
+    box-shadow: var(--timeline-marker-shadow);
   }
 
   .timeline-content {
-    background: var(--timeline-bg-color);
-    border-radius: 8px;
-    padding: 14px 16px;
-    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    background: transparent;
+    border: none;
+    border-radius: 4px;
+    padding: 12px 14px;
+    transition: background 0.2s ease;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    box-shadow: none;
+  }
+
+  .timeline-item.has-image .timeline-content {
+    padding: 12px;
   }
 
   .timeline-item:hover .timeline-content {
     background: var(--timeline-bg-color-hover);
-    box-shadow: var(--timeline-shadow);
-    transform: translateX(4px);
+  }
+
+  .timeline-image-wrapper {
+    flex-shrink: 0;
+    width: 120px;
+    min-width: 120px;
+    overflow: hidden;
+    border-radius: 4px;
+    background: transparent;
   }
 
   .timeline-image {
     width: 100%;
-    max-height: 180px;
+    height: 100%;
+    min-height: 80px;
+    max-height: 120px;
     object-fit: cover;
-    border-radius: 6px;
-    margin-bottom: 12px;
     display: block;
-    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    border-radius: 4px;
+    background: transparent;
+    border: none;
+    outline: none;
   }
 
-  .timeline-item:hover .timeline-image {
-    transform: scale(1.02);
+  .timeline-content-inner {
+    flex: 1;
+    min-width: 0;
   }
 
   .timeline-date {
-    font-size: 11px;
+    font-size: 12px;
     color: var(--timeline-date-color);
-    font-weight: 500;
-    margin-bottom: 8px;
-    opacity: 0;
-    animation: fadeIn 0.6s ease-out forwards;
-    animation-delay: 0.3s;
-  }
-
-  @keyframes fadeIn {
-    to {
-      opacity: 1;
-    }
+    font-weight: 400;
+    margin-bottom: 6px;
+    letter-spacing: 0.01em;
   }
 
   .timeline-title {
     font-size: 15px;
-    font-weight: 600;
+    font-weight: 500;
     color: var(--timeline-title-color);
-    margin-bottom: 8px;
-    line-height: 1.4;
-    transition: color 0.3s ease;
+    margin: 0 0 6px 0;
+    line-height: 1.5;
+    transition: color 0.2s ease;
   }
 
   .timeline-item:hover .timeline-title {
@@ -739,7 +732,7 @@ const Me = he`
     font-size: 13px;
     color: var(--timeline-link-color);
     text-decoration: none;
-    transition: color 0.3s ease;
+    transition: color 0.2s ease;
   }
 
   .timeline-link a:hover {
@@ -757,7 +750,7 @@ const Me = he`
   }
 
   :host .timeline.dark .timeline-content {
-    background: var(--timeline-bg-color-dark);
+    background: transparent;
   }
 
   :host .timeline.dark .timeline-item:hover .timeline-content {
@@ -808,22 +801,22 @@ const Me = he`
   /* 水平布局 */
   :host([orientation="horizontal"]) .timeline {
     display: flex;
-    padding: 0 8px;
+    padding: 0 4px;
   }
 
   :host([orientation="horizontal"]) .timeline::before {
     left: 0;
     right: 0;
-    top: 7px;
+    top: 6px;
     bottom: auto;
     width: auto;
-    height: 1.5px;
+    height: 1px;
   }
 
   :host([orientation="horizontal"]) .timeline-item {
     flex: 1;
     padding-left: 0;
-    padding-top: 36px;
+    padding-top: 28px;
     padding-bottom: 0;
     margin-right: 12px;
   }
@@ -839,11 +832,7 @@ const Me = he`
   }
 
   :host([orientation="horizontal"]) .timeline-item:hover .timeline-marker {
-    transform: translateX(-50%) scale(1.15);
-  }
-
-  :host([orientation="horizontal"]) .timeline-item:hover .timeline-content {
-    transform: translateY(-4px);
+    transform: translateX(-50%);
   }
 `;
 function He() {
@@ -866,7 +855,7 @@ function He() {
     }
   }) || e.classList.contains("dark") || e.getAttribute("data-theme") === "dark" || e.getAttribute("data-color-scheme") === "dark" || e.getAttribute("theme") === "dark";
 }
-function ze(s) {
+function Re(s) {
   const e = new MutationObserver(s);
   return e.observe(document.documentElement, {
     attributes: !0,
@@ -876,13 +865,13 @@ function ze(s) {
     attributeFilter: ["class", "data-theme", "data-color-scheme", "theme"]
   }), e;
 }
-function Re() {
+function ze() {
   return window.__TIMELINE_API_BASE__ || "/apis/api.timeline.xhhao.com/v1alpha1/timelines";
 }
 async function Le(s) {
   if (!s)
     return [];
-  const t = `${Re()}?group=${encodeURIComponent(s)}`, i = await fetch(t);
+  const t = `${ze()}?group=${encodeURIComponent(s)}`, i = await fetch(t);
   if (!i.ok)
     throw new Error(`Failed to fetch timelines: ${i.statusText}`);
   return ((await i.json()).items || []).map((n) => ({
@@ -893,12 +882,12 @@ async function Le(s) {
     relatedLinks: n.spec?.relatedLinks
   })).sort((n, l) => n.date ? l.date ? l.date.localeCompare(n.date) : -1 : 1);
 }
-var De = Object.defineProperty, Ie = Object.getOwnPropertyDescriptor, x = (s, e, t, i) => {
-  for (var r = i > 1 ? void 0 : i ? Ie(e, t) : e, o = s.length - 1, n; o >= 0; o--)
+var De = Object.defineProperty, je = Object.getOwnPropertyDescriptor, x = (s, e, t, i) => {
+  for (var r = i > 1 ? void 0 : i ? je(e, t) : e, o = s.length - 1, n; o >= 0; o--)
     (n = s[o]) && (r = (i ? n(e, t, r) : n(r)) || r);
   return i && r && De(e, t, r), r;
 };
-let g = class extends S {
+let $ = class extends S {
   constructor() {
     super(...arguments), this.groupName = "", this.orientation = "vertical", this.items = [], this.isLoading = !1, this.isDark = !1;
   }
@@ -915,7 +904,7 @@ let g = class extends S {
     this.isDark = He();
   }
   observeTheme() {
-    this.themeObserver = ze(() => {
+    this.themeObserver = Re(() => {
       this.detectTheme();
     });
   }
@@ -940,17 +929,23 @@ let g = class extends S {
       <div class="timeline ${this.isDark ? "dark" : ""}">
         ${this.items.map(
       (s) => f`
-            <div class="timeline-item">
+            <div class="timeline-item ${s.image ? "has-image" : ""}">
               <div class="timeline-marker ${s.active ? "active" : ""}"></div>
               <div class="timeline-content">
-                ${s.image ? f`<img src="${s.image}" alt="${s.displayName || ""}" class="timeline-image" />` : ""}
-                ${s.date ? f`<div class="timeline-date">${s.date}</div>` : ""}
-                ${s.displayName ? f`<div class="timeline-title">${s.displayName}</div>` : ""}
-                ${s.relatedLinks ? f`
-                  <div class="timeline-link">
-                    <a href="${s.relatedLinks}" target="_blank" rel="noopener noreferrer">查看详情</a>
+                ${s.image ? f`
+                  <div class="timeline-image-wrapper">
+                    <img src="${s.image}" alt="${s.displayName || ""}" class="timeline-image" />
                   </div>
                 ` : ""}
+                <div class="timeline-content-inner">
+                  ${s.date ? f`<div class="timeline-date">${s.date}</div>` : ""}
+                  ${s.displayName ? f`<div class="timeline-title">${s.displayName}</div>` : ""}
+                  ${s.relatedLinks ? f`
+                    <div class="timeline-link">
+                      <a href="${s.relatedLinks}" target="_blank" rel="noopener noreferrer">查看关联</a>
+                    </div>
+                  ` : ""}
+                </div>
               </div>
             </div>
           `
@@ -959,25 +954,25 @@ let g = class extends S {
     `);
   }
 };
-g.styles = Me;
+$.styles = Me;
 x([
   W({ type: String, attribute: "group-name" })
-], g.prototype, "groupName", 2);
+], $.prototype, "groupName", 2);
 x([
   W({ type: String })
-], g.prototype, "orientation", 2);
+], $.prototype, "orientation", 2);
 x([
   F()
-], g.prototype, "items", 2);
+], $.prototype, "items", 2);
 x([
   F()
-], g.prototype, "isLoading", 2);
+], $.prototype, "isLoading", 2);
 x([
   F()
-], g.prototype, "isDark", 2);
-g = x([
+], $.prototype, "isDark", 2);
+$ = x([
   Te("timeline-view")
-], g);
+], $);
 export {
-  g as Timeline
+  $ as Timeline
 };

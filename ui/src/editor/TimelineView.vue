@@ -125,9 +125,28 @@ const timelineComponent = computed(() => {
   justify-content: flex-end;
 }
 
-.timeline-view-preview {
-  padding: 5px 10px;
-}
+  .timeline-view-preview {
+    padding: 5px 10px;
+    background: transparent;
+  }
+
+  .timeline-view-preview timeline-view {
+    display: block;
+  }
+
+  /* 通过 CSS 变量确保编辑器中的时间轴样式与前端一致 */
+  .timeline-view-preview {
+    --timeline-bg-color: transparent;
+    --timeline-bg-color-hover: #f9fafb;
+  }
+
+  /* 深色主题下的变量 */
+  .dark .timeline-view-preview,
+  [data-theme="dark"] .timeline-view-preview,
+  html.dark .timeline-view-preview {
+    --timeline-bg-color: transparent;
+    --timeline-bg-color-hover: #1f2937;
+  }
 
 .timeline-group-select-wrapper {
   min-width: 200px;

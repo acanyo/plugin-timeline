@@ -4,41 +4,43 @@ export const timelineStyles = css`
   :host {
     display: block;
     --timeline-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    --timeline-text-color: #111827;
-    --timeline-text-color-dark: #f9fafb;
-    --timeline-line-color: #d1d5db;
+    
+    /* 浅色主题 - 更低调的颜色 */
+    --timeline-text-color: #374151;
+    --timeline-text-color-dark: #e5e7eb;
+    --timeline-line-color: #e5e7eb;
     --timeline-line-color-dark: #4b5563;
-    --timeline-bg-color: #fafafa;
-    --timeline-bg-color-hover: #fff;
-    --timeline-bg-color-dark: #1a1f2e;
+    --timeline-bg-color: transparent;
+    --timeline-bg-color-hover: #f9fafb;
+    --timeline-bg-color-dark: transparent;
     --timeline-bg-color-hover-dark: #1f2937;
     --timeline-marker-bg: #fff;
-    --timeline-marker-bg-dark: #1f2937;
-    --timeline-marker-border: #3b82f6;
-    --timeline-marker-border-dark: #60a5fa;
-    --timeline-marker-active-bg: #3b82f6;
-    --timeline-marker-active-bg-dark: #60a5fa;
+    --timeline-marker-bg-dark: #374151;
+    --timeline-marker-border: #9ca3af;
+    --timeline-marker-border-dark: #6b7280;
+    --timeline-marker-active-bg: #6366f1;
+    --timeline-marker-active-bg-dark: #818cf8;
     --timeline-title-color: #111827;
-    --timeline-title-color-dark: #f9fafb;
-    --timeline-title-hover-color: #3b82f6;
-    --timeline-title-hover-color-dark: #60a5fa;
-    --timeline-date-color: #3b82f6;
-    --timeline-date-color-dark: #60a5fa;
-    --timeline-link-color: #3b82f6;
-    --timeline-link-color-dark: #60a5fa;
-    --timeline-link-hover-color: #2563eb;
-    --timeline-link-hover-color-dark: #93c5fd;
-    --timeline-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    --timeline-shadow-dark: 0 4px 12px rgba(0, 0, 0, 0.4);
-    --timeline-marker-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
-    --timeline-marker-shadow-dark: 0 0 0 4px rgba(96, 165, 250, 0.2);
-    --timeline-marker-shadow-hover: 0 0 0 6px rgba(59, 130, 246, 0.2);
-    --timeline-marker-shadow-hover-dark: 0 0 0 6px rgba(96, 165, 250, 0.3);
-    --timeline-empty-color: #6b7280;
-    --timeline-empty-color-dark: #9ca3af;
+    --timeline-title-color-dark: #f3f4f6;
+    --timeline-title-hover-color: #6366f1;
+    --timeline-title-hover-color-dark: #818cf8;
+    --timeline-date-color: #6b7280;
+    --timeline-date-color-dark: #9ca3af;
+    --timeline-link-color: #6366f1;
+    --timeline-link-color-dark: #818cf8;
+    --timeline-link-hover-color: #4f46e5;
+    --timeline-link-hover-color-dark: #a5b4fc;
+    --timeline-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --timeline-shadow-dark: 0 1px 2px rgba(0, 0, 0, 0.2);
+    --timeline-marker-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    --timeline-marker-shadow-dark: 0 0 0 3px rgba(129, 140, 248, 0.15);
+    --timeline-empty-color: #9ca3af;
+    --timeline-empty-color-dark: #6b7280;
     
     font-family: var(--timeline-font-family);
     color: var(--timeline-text-color);
+    font-size: 14px;
+    line-height: 1.6;
   }
 
   .timeline-header {
@@ -55,128 +57,119 @@ export const timelineStyles = css`
 
   .timeline {
     position: relative;
-    padding: 8px 0;
+    padding: 4px 0;
   }
 
   .timeline::before {
     content: '';
     position: absolute;
-    left: 7px;
+    left: 6px;
     top: 0;
     bottom: 0;
-    width: 1.5px;
+    width: 1px;
     background: var(--timeline-line-color);
   }
 
   .timeline-item {
     position: relative;
-    padding-left: 36px;
-    padding-bottom: 24px;
-    animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+    padding-left: 28px;
+    padding-bottom: 20px;
   }
-
-  .timeline-item:nth-child(1) { animation-delay: 0.05s; }
-  .timeline-item:nth-child(2) { animation-delay: 0.1s; }
-  .timeline-item:nth-child(3) { animation-delay: 0.15s; }
-  .timeline-item:nth-child(4) { animation-delay: 0.2s; }
-  .timeline-item:nth-child(5) { animation-delay: 0.25s; }
-  .timeline-item:nth-child(6) { animation-delay: 0.3s; }
 
   .timeline-item:last-child {
     padding-bottom: 0;
   }
 
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(16px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
   .timeline-marker {
     position: absolute;
     left: 0;
-    top: 2px;
-    width: 14px;
-    height: 14px;
+    top: 4px;
+    width: 12px;
+    height: 12px;
     border-radius: 50%;
     background: var(--timeline-marker-bg);
     border: 2px solid var(--timeline-marker-border);
     z-index: 2;
-    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition: all 0.2s ease;
+    box-sizing: border-box;
   }
 
   .timeline-marker.active {
     background: var(--timeline-marker-active-bg);
     border-color: var(--timeline-marker-active-bg);
-    transform: scale(1.2);
     box-shadow: var(--timeline-marker-shadow);
   }
 
   .timeline-item:hover .timeline-marker {
-    transform: scale(1.15);
     border-color: var(--timeline-title-hover-color);
   }
 
   .timeline-item:hover .timeline-marker.active {
-    transform: scale(1.25);
-    box-shadow: var(--timeline-marker-shadow-hover);
+    box-shadow: var(--timeline-marker-shadow);
   }
 
   .timeline-content {
-    background: var(--timeline-bg-color);
-    border-radius: 8px;
-    padding: 14px 16px;
-    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    background: transparent;
+    border: none;
+    border-radius: 4px;
+    padding: 12px 14px;
+    transition: background 0.2s ease;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    box-shadow: none;
+  }
+
+  .timeline-item.has-image .timeline-content {
+    padding: 12px;
   }
 
   .timeline-item:hover .timeline-content {
     background: var(--timeline-bg-color-hover);
-    box-shadow: var(--timeline-shadow);
-    transform: translateX(4px);
+  }
+
+  .timeline-image-wrapper {
+    flex-shrink: 0;
+    width: 120px;
+    min-width: 120px;
+    overflow: hidden;
+    border-radius: 4px;
+    background: transparent;
   }
 
   .timeline-image {
     width: 100%;
-    max-height: 180px;
+    height: 100%;
+    min-height: 80px;
+    max-height: 120px;
     object-fit: cover;
-    border-radius: 6px;
-    margin-bottom: 12px;
     display: block;
-    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    border-radius: 4px;
+    background: transparent;
+    border: none;
+    outline: none;
   }
 
-  .timeline-item:hover .timeline-image {
-    transform: scale(1.02);
+  .timeline-content-inner {
+    flex: 1;
+    min-width: 0;
   }
 
   .timeline-date {
-    font-size: 11px;
+    font-size: 12px;
     color: var(--timeline-date-color);
-    font-weight: 500;
-    margin-bottom: 8px;
-    opacity: 0;
-    animation: fadeIn 0.6s ease-out forwards;
-    animation-delay: 0.3s;
-  }
-
-  @keyframes fadeIn {
-    to {
-      opacity: 1;
-    }
+    font-weight: 400;
+    margin-bottom: 6px;
+    letter-spacing: 0.01em;
   }
 
   .timeline-title {
     font-size: 15px;
-    font-weight: 600;
+    font-weight: 500;
     color: var(--timeline-title-color);
-    margin-bottom: 8px;
-    line-height: 1.4;
-    transition: color 0.3s ease;
+    margin: 0 0 6px 0;
+    line-height: 1.5;
+    transition: color 0.2s ease;
   }
 
   .timeline-item:hover .timeline-title {
@@ -205,7 +198,7 @@ export const timelineStyles = css`
     font-size: 13px;
     color: var(--timeline-link-color);
     text-decoration: none;
-    transition: color 0.3s ease;
+    transition: color 0.2s ease;
   }
 
   .timeline-link a:hover {
@@ -223,7 +216,7 @@ export const timelineStyles = css`
   }
 
   :host .timeline.dark .timeline-content {
-    background: var(--timeline-bg-color-dark);
+    background: transparent;
   }
 
   :host .timeline.dark .timeline-item:hover .timeline-content {
@@ -274,22 +267,22 @@ export const timelineStyles = css`
   /* 水平布局 */
   :host([orientation="horizontal"]) .timeline {
     display: flex;
-    padding: 0 8px;
+    padding: 0 4px;
   }
 
   :host([orientation="horizontal"]) .timeline::before {
     left: 0;
     right: 0;
-    top: 7px;
+    top: 6px;
     bottom: auto;
     width: auto;
-    height: 1.5px;
+    height: 1px;
   }
 
   :host([orientation="horizontal"]) .timeline-item {
     flex: 1;
     padding-left: 0;
-    padding-top: 36px;
+    padding-top: 28px;
     padding-bottom: 0;
     margin-right: 12px;
   }
@@ -305,11 +298,7 @@ export const timelineStyles = css`
   }
 
   :host([orientation="horizontal"]) .timeline-item:hover .timeline-marker {
-    transform: translateX(-50%) scale(1.15);
-  }
-
-  :host([orientation="horizontal"]) .timeline-item:hover .timeline-content {
-    transform: translateY(-4px);
+    transform: translateX(-50%);
   }
 `;
 
