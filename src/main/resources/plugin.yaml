@@ -16,7 +16,7 @@ spec:
   repo: https://github.com/acanyo/timeline
   issues: https://github.com/acanyo/timeline/issues
   displayName: "时间轴"
-  description: "为 Halo2 提供时间轴组件、横向/竖向布局，可在编辑器中灵活插入，自动适配深色主题"
+  description: "为 Halo2 提供时间轴组件、横向/竖向布局，可在编辑器中灵活插入"
   license:
     - name: "GPL-3.0"
       url: "https://github.com/Handsome/timeline/blob/main/LICENSE"
