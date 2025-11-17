@@ -1,6 +1,6 @@
 import { definePlugin } from "@halo-dev/console-shared";
 import { defineAsyncComponent, markRaw } from "vue";
-import TablerClock from '~icons/tabler/clock'
+import IconParkOutlineTimeline from '~icons/icon-park-outline/timeline'
 import "uno.css";
 import { VLoading } from "@halo-dev/components";
 import '@xhhaocom/timeline-view';
@@ -22,7 +22,7 @@ export default definePlugin({
           menu: {
             name: "时间轴",
             group: "content",
-            icon: markRaw(TablerClock),
+            icon: markRaw(IconParkOutlineTimeline),
           },
         },
       },

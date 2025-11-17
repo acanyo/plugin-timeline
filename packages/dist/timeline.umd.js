@@ -5,7 +5,6 @@
     display: block;
     --timeline-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     
-    /* 浅色主题 - 更低调的颜色 */
     --timeline-text-color: #374151;
     --timeline-text-color-dark: #e5e7eb;
     --timeline-line-color: #e5e7eb;
