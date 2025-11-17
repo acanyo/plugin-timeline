@@ -9,7 +9,7 @@ metadata:
     rbac.authorization.halo.run/ui-permissions: '["plugin:timeline:view"]'
     rbac.authorization.halo.run/display-name: "时间轴查看"
 rules:
-  - apiGroups: [ "core.halo.run", "api.timeline.xhhao.com", "timeline.xhhao.com"]
+  - apiGroups: [ "core.halo.run", "timeline.xhhao.com"]
     resources: [ "timelines", "timelinegroups" ]
     verbs: [ "get", "list" ]
 ---
@@ -28,3 +28,19 @@ rules:
   - apiGroups: [ "core.halo.run", "api.timeline.xhhao.com", "timeline.xhhao.com"]
     resources: [ "timelines", "timelinegroups" ]
     verbs: [ "create", "patch", "update", "delete", "deletecollection" ]
+---
+apiVersion: v1alpha1
+kind: Role
+metadata:
+  name: timeline-power-public-apis
+  labels:
+    halo.run/role-template: "true"
+    halo.run/hidden: "true"
+    rbac.authorization.halo.run/aggregate-to-anonymous: "true"
+  annotations:
+    rbac.authorization.halo.run/module: "timeline Plugin Public"
+    rbac.authorization.halo.run/display-name: "timeline Plugin Public APIs"
+rules:
+  - apiGroups: [ "api.timeline.xhhao.com" ]
+    resources: ["timelines"]
+    verbs: [ "get", "list" ]
