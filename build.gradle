@@ -12,7 +12,7 @@ repositories {
 }
 
 dependencies {
-    implementation platform('run.halo.tools.platform:plugin:2.21.0')
+    implementation platform('run.halo.tools.platform:plugin:2.22.0-alpha.1')
     compileOnly 'run.halo.app:api'
 
     testImplementation 'run.halo.app:api'
@@ -47,6 +47,6 @@ tasks.named('classes') {
 }
 
 halo {
-    version = '2.21.9'
+    version = '2.22.0-alpha.1'
 }
 

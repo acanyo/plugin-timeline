@@ -11,7 +11,7 @@ import run.halo.app.extension.ListOptions;
 import run.halo.app.extension.ListResult;
 import run.halo.app.extension.PageRequestImpl;
 import run.halo.app.extension.ReactiveExtensionClient;
-import run.halo.app.extension.index.query.QueryFactory;
+import static run.halo.app.extension.index.query.Queries.equal;
 import com.xhhao.timeline.TimelineGroupQuery;
 import com.xhhao.timeline.extension.Timeline;
 import com.xhhao.timeline.extension.TimelineGroup;
@@ -57,7 +57,7 @@ public class TimelineGroupServiceImpl implements TimelineGroupService {
             .flatMap(this.client::delete)
             .flatMap(deleted -> {
                     var listOptions = ListOptions.builder()
-                        .andQuery(QueryFactory.equal("spec.groupName", name))
+                        .andQuery(equal("spec.groupName", name))
                         .build();
                     return this.client.listAll(Timeline.class, listOptions, Sort.unsorted())
                         .flatMap(this.client::delete)

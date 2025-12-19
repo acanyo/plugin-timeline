@@ -1,4 +1,4 @@
-import { definePlugin } from "@halo-dev/console-shared";
+import { definePlugin } from "@halo-dev/ui-shared";
 import { defineAsyncComponent, markRaw } from "vue";
 import IconParkOutlineTimeline from '~icons/icon-park-outline/timeline'
 import "uno.css";

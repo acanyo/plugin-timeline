@@ -21,10 +21,12 @@
     "tabWidth": 2
   },
   "dependencies": {
-    "@halo-dev/api-client": "^2.21.1",
-    "@halo-dev/components": "^2.21.0",
-    "@halo-dev/console-shared": "^2.21.0",
-    "@halo-dev/richtext-editor": "^2.21.0",
+    "@halo-dev/api-client": "https://pkg.pr.new/halo-dev/halo/@halo-dev/api-client@6d18dc1",
+    "@halo-dev/components": "https://pkg.pr.new/@halo-dev/components@7383",
+    "@halo-dev/ui-shared": "https://pkg.pr.new/@halo-dev/ui-shared@8003",
+    "@halo-dev/richtext-editor": "https://pkg.pr.new/@halo-dev/richtext-editor@7383",
+    "pinia": "^3.0.4",
+    "vue-router": "^4.6.4",
     "@number-flow/vue": "^0.4.8",
     "@tanstack/vue-query": "4",
     "@vueuse/core": "10",

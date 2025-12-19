@@ -1,15 +1,15 @@
 package com.xhhao.timeline;
 
-import static run.halo.app.extension.index.IndexAttributeFactory.simpleAttribute;
-
 import com.xhhao.timeline.extension.Timeline;
 import com.xhhao.timeline.extension.TimelineGroup;
 import org.springframework.stereotype.Component;
 import run.halo.app.extension.Scheme;
 import run.halo.app.extension.SchemeManager;
-import run.halo.app.extension.index.IndexSpec;
+import run.halo.app.extension.index.IndexSpecs;
 import run.halo.app.plugin.BasePlugin;
 import run.halo.app.plugin.PluginContext;
+
+import java.util.Optional;
 
 /**
  * <p>Plugin main class to manage the lifecycle of the plugin.</p>
@@ -32,43 +32,47 @@ public class TimelinePlugin extends BasePlugin {
     @Override
     public void start() {
         // Register Timeline indexes
-        schemeManager.register(Timeline.class, indexSpecs -> indexSpecs.add(new IndexSpec()
-            .setName("spec.groupName")
-            .setIndexFunc(
-                simpleAttribute(Timeline.class, timeline -> timeline.getSpec().getGroupName()))));
+        schemeManager.register(Timeline.class, indexSpecs -> {
+            indexSpecs.add(IndexSpecs.<Timeline, String>single("spec.groupName", String.class)
+                .indexFunc(timeline -> Optional.ofNullable(timeline.getSpec())
+                    .map(Timeline.Spec::getGroupName)
+                    .orElse(null)));
 
-        schemeManager.register(Timeline.class, indexSpecs -> indexSpecs.add(new IndexSpec()
-            .setName("spec.date")
-            .setIndexFunc(
-                simpleAttribute(Timeline.class, timeline -> timeline.getSpec().getDate()))));
+            indexSpecs.add(IndexSpecs.<Timeline, String>single("spec.date", String.class)
+                .indexFunc(timeline -> Optional.ofNullable(timeline.getSpec())
+                    .map(Timeline.Spec::getDate)
+                    .orElse(null)));
 
-        schemeManager.register(Timeline.class, indexSpecs -> indexSpecs.add(new IndexSpec()
-            .setName("spec.displayName")
-            .setIndexFunc(
-                simpleAttribute(Timeline.class, timeline -> timeline.getSpec().getDisplayName()))));
+            indexSpecs.add(IndexSpecs.<Timeline, String>single("spec.displayName", String.class)
+                .indexFunc(timeline -> Optional.ofNullable(timeline.getSpec())
+                    .map(Timeline.Spec::getDisplayName)
+                    .orElse(null)));
 
-        schemeManager.register(Timeline.class, indexSpecs -> indexSpecs.add(new IndexSpec()
-            .setName("spec.active")
-            .setIndexFunc(
-                simpleAttribute(Timeline.class, timeline -> 
-                    timeline.getSpec().getActive() != null ? String.valueOf(timeline.getSpec().getActive()) : null))));
+            indexSpecs.add(IndexSpecs.<Timeline, String>single("spec.active", String.class)
+                .indexFunc(timeline -> Optional.ofNullable(timeline.getSpec())
+                    .map(Timeline.Spec::getActive)
+                    .map(String::valueOf)
+                    .orElse(null)));
 
-        schemeManager.register(Timeline.class, indexSpecs -> indexSpecs.add(new IndexSpec()
-            .setName("spec.relatedLinks")
-            .setIndexFunc(
-                simpleAttribute(Timeline.class, timeline -> timeline.getSpec().getRelatedLinks()))));
+            indexSpecs.add(IndexSpecs.<Timeline, String>single("spec.relatedLinks", String.class)
+                .indexFunc(timeline -> Optional.ofNullable(timeline.getSpec())
+                    .map(Timeline.Spec::getRelatedLinks)
+                    .orElse(null)));
+        });
 
         // Register TimelineGroup indexes
-        schemeManager.register(TimelineGroup.class, indexSpecs -> indexSpecs.add(new IndexSpec()
-            .setName("spec.priority")
-            .setIndexFunc(
-                simpleAttribute(TimelineGroup.class, group -> String.valueOf(
-                    group.getSpec().getPriority() != null ? group.getSpec().getPriority() : 0)))));
+        schemeManager.register(TimelineGroup.class, indexSpecs -> {
+            indexSpecs.add(IndexSpecs.<TimelineGroup, String>single("spec.priority", String.class)
+                .indexFunc(group -> Optional.ofNullable(group.getSpec())
+                    .map(TimelineGroup.Spec::getPriority)
+                    .map(p -> String.valueOf(p != null ? p : 0))
+                    .orElse("0")));
 
-        schemeManager.register(TimelineGroup.class, indexSpecs -> indexSpecs.add(new IndexSpec()
-            .setName("spec.displayName")
-            .setIndexFunc(
-                simpleAttribute(TimelineGroup.class, group -> group.getSpec().getDisplayName()))));
+            indexSpecs.add(IndexSpecs.<TimelineGroup, String>single("spec.displayName", String.class)
+                .indexFunc(group -> Optional.ofNullable(group.getSpec())
+                    .map(TimelineGroup.Spec::getDisplayName)
+                    .orElse(null)));
+        });
 
     }
 
