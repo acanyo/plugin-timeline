@@ -81,7 +81,7 @@ export const timelineStyles = css`
 
   .timeline-marker {
     position: absolute;
-    left: 0;
+    left: 6.5px;
     top: 3px;
     width: 12px;
     height: 12px;
@@ -91,6 +91,7 @@ export const timelineStyles = css`
     z-index: 2;
     transition: all 0.2s ease;
     box-sizing: border-box;
+    transform: translateX(-50%);
   }
 
   .timeline-marker.active {

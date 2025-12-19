@@ -1,5 +1,6 @@
 package com.xhhao.timeline.service.impl;
 
+import static run.halo.app.extension.index.query.Queries.equal;
 import static run.halo.app.extension.router.selector.SelectorUtil.labelAndFieldSelectorToListOptions;
 
 import org.springframework.data.domain.Sort;
@@ -11,7 +12,6 @@ import run.halo.app.extension.ListOptions;
 import run.halo.app.extension.ListResult;
 import run.halo.app.extension.PageRequestImpl;
 import run.halo.app.extension.ReactiveExtensionClient;
-import static run.halo.app.extension.index.query.Queries.equal;
 import com.xhhao.timeline.TimelineGroupQuery;
 import com.xhhao.timeline.extension.Timeline;
 import com.xhhao.timeline.extension.TimelineGroup;
