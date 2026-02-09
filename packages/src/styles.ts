@@ -570,10 +570,12 @@ export const timelineStyles = css`
   /* 交替布局下的图片和内容对齐 */
   :host([orientation="alternating"]) .timeline-item-right .timeline-content {
     justify-content: flex-start;
+    flex-direction: row;
   }
 
   :host([orientation="alternating"]) .timeline-item-left .timeline-content {
     justify-content: flex-end;
+    flex-direction: row-reverse;
   }
 
   :host([orientation="alternating"]) .timeline-item-left .timeline-content-inner {
