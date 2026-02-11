@@ -42,8 +42,16 @@ tasks.register('processUiResources', Copy) {
     shouldRunAfter tasks.named('processResources')
 }
 
+tasks.register('processPackagesResources', Copy) {
+    from project(':packages').projectDir.toPath().resolve('dist')
+    into layout.buildDirectory.dir('resources/main/static')
+    dependsOn project(':packages').tasks.named('assemble')
+    shouldRunAfter tasks.named('processResources')
+}
+
 tasks.named('classes') {
     dependsOn tasks.named('processUiResources')
+    dependsOn tasks.named('processPackagesResources')
 }
 
 halo {

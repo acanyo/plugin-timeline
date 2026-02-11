@@ -5,3 +5,4 @@ pluginManagement {
 }
 rootProject.name = 'plugin-timeline'
 include 'ui'
+include 'packages'

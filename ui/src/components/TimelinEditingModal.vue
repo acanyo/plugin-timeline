@@ -158,7 +158,14 @@ watch(Meta_Enter, (v) => {
                 </div>
                 <div class=":uno: mt-5 md:col-span-3 md:mt-0 divide-y divide-gray-100">
                     <FormKit name="date" label="日期" type="date" help="格式：YYYY-MM-DD" validation="required"></FormKit>
-                    <FormKit name="displayName" label="显示名称" type="textarea" validation="required"></FormKit>
+                    <FormKit 
+                        name="displayName" 
+                        label="内容" 
+                        type="textarea" 
+                        validation="required"
+                        :rows="8"
+                        help="支持 Markdown 语法，如 **粗体**、*斜体*、[链接](url)、列表等"
+                    ></FormKit>
                     <FormKit name="image" label="图片" type="attachment" :accepts="['image/*']"></FormKit>
                     <FormKit name="active" label="激活状态" type="checkbox" help="用于高亮显示"></FormKit>
 
